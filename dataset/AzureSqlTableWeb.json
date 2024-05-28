@@ -1,0 +1,33 @@
+{
+	"name": "AzureSqlTableWeb",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseTest",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "userid",
+				"type": "varchar"
+			},
+			{
+				"name": "id",
+				"type": "varchar"
+			},
+			{
+				"name": "title",
+				"type": "varchar"
+			},
+			{
+				"name": "body",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "webcontentAzure"
+		}
+	}
+}

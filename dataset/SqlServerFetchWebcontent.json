@@ -1,0 +1,33 @@
+{
+	"name": "SqlServerFetchWebcontent",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerExamDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "userid",
+				"type": "varchar"
+			},
+			{
+				"name": "id",
+				"type": "varchar"
+			},
+			{
+				"name": "title",
+				"type": "varchar"
+			},
+			{
+				"name": "body",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "webcontent"
+		}
+	}
+}
