@@ -1,0 +1,16 @@
+{
+	"name": "SqlServerwebcontent",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerExamDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "webcontent"
+		}
+	}
+}
