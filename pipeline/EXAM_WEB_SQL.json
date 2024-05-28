@@ -1,5 +1,5 @@
 {
-	"name": "pipeline3",
+	"name": "EXAM_WEB_SQL",
 	"properties": {
 		"activities": [
 			{
@@ -38,6 +38,10 @@
 							{
 								"source": {
 									"path": "$['userId']"
+								},
+								"sink": {
+									"name": "userid",
+									"type": "String"
 								}
 							},
 							{
