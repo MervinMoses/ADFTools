@@ -58,9 +58,6 @@
 					"name": "select1"
 				},
 				{
-					"name": "sort1"
-				},
-				{
 					"name": "surrogateKey1"
 				},
 				{
@@ -73,7 +70,10 @@
 					"name": "Profit"
 				},
 				{
-					"name": "aggregate1"
+					"name": "sortRank"
+				},
+				{
+					"name": "split1"
 				}
 			],
 			"scriptLines": [
@@ -172,7 +172,6 @@
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> joinsubcatProduct",
 				"joinsubcatProduct select(mapColumn(",
-				"          ProductID,",
 				"          Name,",
 				"          ProductNumber,",
 				"          Color,",
@@ -185,8 +184,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 sort(asc(Name, true)) ~> sort1",
-				"sort1 keyGenerate(output(ProductId as long),",
+				"select1 keyGenerate(output(ProductId as long),",
 				"     startAt: 1L,",
 				"     stepValue: 1L) ~> surrogateKey1",
 				"surrogateKey1 select(mapColumn(",
@@ -203,11 +201,13 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> IdonTop",
-				"Profit rank(desc(Profit_margin, true),",
+				"Profit rank(desc(SubCatagoryName, true),",
 				"     output(Rank as long)) ~> rank1",
 				"IdonTop derive(Profit_margin = ListPrice-StandardCost) ~> Profit",
-				"rank1 aggregate() ~> aggregate1",
-				"aggregate1 sink(allowSchemaDrift: true,",
+				"rank1 sort(asc(Rank, true)) ~> sortRank",
+				"sortRank split(ERROR_FUNCTION(''),",
+				"     disjoint: false) ~> split1@(, )",
+				"split1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
