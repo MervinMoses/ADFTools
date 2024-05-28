@@ -5,14 +5,8 @@
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
-			"server": "azure-sql-storage1.database.windows.net",
-			"database": "DestinationDB",
-			"encrypt": "optional",
-			"trustServerCertificate": false,
-			"hostNameInCertificate": "",
-			"authenticationType": "SQL",
-			"userName": "Mervin",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDg3NTU1Qzk3LTZBNjctNDFCQy05N0MxLThEQ0JEMzIwMUYzOV9kODk3NGMzZi02ZmYzLTRkZWMtODIwOS0wMjliNDBmYmEwODEiDQp9"
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=azure-sql-storage1.database.windows.net;initial catalog=DestinationDB;user id=Mervin",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDg3NTU1Qzk3LTZBNjctNDFCQy05N0MxLThEQ0JEMzIwMUYzOV82NjRmNDE2YS1kNzZhLTQ4NTAtODcxMS0xYmRlYzYyZTQyNGQiDQp9"
 		}
 	}
 }
