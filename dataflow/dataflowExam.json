@@ -68,12 +68,6 @@
 				},
 				{
 					"name": "Profit"
-				},
-				{
-					"name": "sortRank"
-				},
-				{
-					"name": "split1"
 				}
 			],
 			"scriptLines": [
@@ -201,13 +195,10 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> IdonTop",
-				"Profit rank(desc(SubCatagoryName, true),",
+				"Profit rank(desc(Profit_margin, true),",
 				"     output(Rank as long)) ~> rank1",
 				"IdonTop derive(Profit_margin = ListPrice-StandardCost) ~> Profit",
-				"rank1 sort(asc(Rank, true)) ~> sortRank",
-				"sortRank split(ERROR_FUNCTION(''),",
-				"     disjoint: false) ~> split1@(, )",
-				"split1 sink(allowSchemaDrift: true,",
+				"rank1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
