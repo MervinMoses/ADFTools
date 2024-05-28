@@ -195,7 +195,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> IdonTop",
-				"Profit rank(desc(Profit_margin, true),",
+				"Profit rank(asc(Profit_margin, true),",
 				"     output(Rank as long)) ~> rank1",
 				"IdonTop derive(Profit_margin = ListPrice-StandardCost) ~> Profit",
 				"rank1 sink(allowSchemaDrift: true,",
