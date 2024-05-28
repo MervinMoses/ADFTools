@@ -258,9 +258,6 @@
 					"SqlServerTableTesting_password": {
 						"value": "[parameters('SqlServerTableTesting_password')]"
 					},
-					"SqlServerTestingWeb_password": {
-						"value": "[parameters('SqlServerTestingWeb_password')]"
-					},
 					"SqlServer1_properties_typeProperties_server": {
 						"value": "[parameters('SqlServer1_properties_typeProperties_server')]"
 					},
@@ -305,15 +302,6 @@
 					},
 					"SqlServerTableTesting_properties_typeProperties_userName": {
 						"value": "[parameters('SqlServerTableTesting_properties_typeProperties_userName')]"
-					},
-					"SqlServerTestingWeb_properties_typeProperties_server": {
-						"value": "[parameters('SqlServerTestingWeb_properties_typeProperties_server')]"
-					},
-					"SqlServerTestingWeb_properties_typeProperties_database": {
-						"value": "[parameters('SqlServerTestingWeb_properties_typeProperties_database')]"
-					},
-					"SqlServerTestingWeb_properties_typeProperties_userName": {
-						"value": "[parameters('SqlServerTestingWeb_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -335,11 +323,23 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"SqlServerTestingWeb_password": {
+						"value": "[parameters('SqlServerTestingWeb_password')]"
+					},
 					"sqldbadventure_password": {
 						"value": "[parameters('sqldbadventure_password')]"
 					},
 					"sqldbexcersie_password": {
 						"value": "[parameters('sqldbexcersie_password')]"
+					},
+					"SqlServerTestingWeb_properties_typeProperties_server": {
+						"value": "[parameters('SqlServerTestingWeb_properties_typeProperties_server')]"
+					},
+					"SqlServerTestingWeb_properties_typeProperties_database": {
+						"value": "[parameters('SqlServerTestingWeb_properties_typeProperties_database')]"
+					},
+					"SqlServerTestingWeb_properties_typeProperties_userName": {
+						"value": "[parameters('SqlServerTestingWeb_properties_typeProperties_userName')]"
 					},
 					"sqldbadventure_properties_typeProperties_server": {
 						"value": "[parameters('sqldbadventure_properties_typeProperties_server')]"

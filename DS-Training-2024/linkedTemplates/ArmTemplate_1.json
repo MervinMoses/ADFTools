@@ -27,10 +27,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'SqlServerTableTesting'"
 		},
-		"SqlServerTestingWeb_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'SqlServerTestingWeb'"
-		},
 		"SqlServer1_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "DESKTOP-14J830G\\SQLEXPRESS"
@@ -90,24 +86,48 @@
 		"SqlServerTableTesting_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "DESKTOP-14J830G\\Admin"
-		},
-		"SqlServerTestingWeb_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "DESKTOP-14J830G\\SQLEXPRESS"
-		},
-		"SqlServerTestingWeb_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "testing"
-		},
-		"SqlServerTestingWeb_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "DESKTOP-14J830G\\Admin"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableWeb')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseTest",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "userid",
+						"type": "varchar"
+					},
+					{
+						"name": "id",
+						"type": "varchar"
+					},
+					{
+						"name": "title",
+						"type": "varchar"
+					},
+					{
+						"name": "body",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "webcontentAzure"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -709,33 +729,6 @@
 					"password": {
 						"type": "SecureString",
 						"value": "[parameters('SqlServerTableTesting_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeExcersie",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SqlServerTestingWeb')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "SqlServer",
-				"typeProperties": {
-					"server": "[parameters('SqlServerTestingWeb_properties_typeProperties_server')]",
-					"database": "[parameters('SqlServerTestingWeb_properties_typeProperties_database')]",
-					"encrypt": "optional",
-					"trustServerCertificate": false,
-					"hostNameInCertificate": "",
-					"authenticationType": "Windows",
-					"userName": "[parameters('SqlServerTestingWeb_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('SqlServerTestingWeb_password')]"
 					}
 				},
 				"connectVia": {

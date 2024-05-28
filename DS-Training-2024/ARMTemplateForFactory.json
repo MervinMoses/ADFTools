@@ -355,7 +355,8 @@
 									"ProductCategory": {},
 									"ProductSubCatagory": {},
 									"Products": {},
-									"sink1": {}
+									"Top10": {},
+									"sinkRest": {}
 								}
 							},
 							"staging": {},
@@ -614,6 +615,7 @@
 							},
 							"sink": {
 								"type": "SqlServerSink",
+								"preCopyScript": "truncate table [dbo].[Raw]",
 								"writeBehavior": "insert",
 								"sqlWriterUseTableLock": false,
 								"tableOption": "autoCreate"
@@ -2872,27 +2874,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTable4')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseTest",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "DataFlowData"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseTest')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTableAlbin')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2955,6 +2936,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableExamProductsRest')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseTest",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "webContentRest"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseTest')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTableExamSubCatagory')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2998,6 +3000,27 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableProduct10')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseTest",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DataFlowData"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseTest')]"
 			]
 		},
 		{
@@ -4713,10 +4736,17 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "AzureSqlTable4",
+								"referenceName": "AzureSqlTableProduct10",
 								"type": "DatasetReference"
 							},
-							"name": "sink1"
+							"name": "Top10"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTableExamProductsRest",
+								"type": "DatasetReference"
+							},
+							"name": "sinkRest"
 						}
 					],
 					"transformations": [
@@ -4752,6 +4782,9 @@
 						},
 						{
 							"name": "Profit"
+						},
+						{
+							"name": "split1"
 						}
 					],
 					"scriptLines": [
@@ -4882,7 +4915,9 @@
 						"Profit rank(asc(Profit_margin, true),",
 						"     output(Rank as long)) ~> rank1",
 						"IdonTop derive(Profit_margin = ListPrice-StandardCost) ~> Profit",
-						"rank1 sink(allowSchemaDrift: true,",
+						"rank1 split(Rank<=10,",
+						"     disjoint: true) ~> split1@(topTen, else)",
+						"split1@topTen sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:true,",
@@ -4891,7 +4926,17 @@
 						"     format: 'table',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+						"     errorHandlingOption: 'stopOnFirstError') ~> Top10",
+						"split1@else sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sinkRest"
 					]
 				}
 			},
@@ -4899,7 +4944,8 @@
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTableExamProduct')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTableExamSubCatagory')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTable4')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTableProduct10')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTableExamProductsRest')]"
 			]
 		},
 		{
