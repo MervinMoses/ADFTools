@@ -11,6 +11,9 @@
 		"AzureBlobStorageMca_connectionString": {
 			"value": ""
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
 		"AzureSqlDatabaseAlbinTest_connectionString": {
 			"value": ""
 		},
@@ -46,6 +49,12 @@
 		},
 		"RestService1Employee_properties_typeProperties_url": {
 			"value": "https://dummy.restapiexample.com/api/v1/employee"
+		},
+		"RestService2_properties_typeProperties_url": {
+			"value": "https://jsonplaceholder.typicode.com/posts"
+		},
+		"RestService3_properties_typeProperties_url": {
+			"value": "https://jsonplaceholder.typicode.com/posts"
 		},
 		"SqlServer1_properties_typeProperties_server": {
 			"value": "DESKTOP-14J830G\\SQLEXPRESS"
@@ -118,9 +127,6 @@
 		},
 		"sqldbexcersie_properties_typeProperties_userName": {
 			"value": "DESKTOP-14J830G\\Admin"
-		},
-		"RestService2_properties_typeProperties_url": {
-			"value": "https://jsonplaceholder.typicode.com/posts"
 		},
 		"containerUri": {
 			"value": ""
