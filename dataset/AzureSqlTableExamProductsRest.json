@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable4",
+	"name": "AzureSqlTableExamProductsRest",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureSqlDatabaseTest",
@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "DataFlowData"
+			"table": "webContentRest"
 		}
 	}
 }
