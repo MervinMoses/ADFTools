@@ -14,7 +14,7 @@
 		"AzureSqlDatabaseAlbinTest_connectionString": {
 			"value": ""
 		},
-		"AzureSqlDatabaseTest_password": {
+		"AzureSqlDatabaseTest_connectionString": {
 			"value": ""
 		},
 		"SqlServer1_password": {
@@ -40,15 +40,6 @@
 		},
 		"sqldbexcersie_password": {
 			"value": ""
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_server": {
-			"value": "azure-sql-storage1.database.windows.net"
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_database": {
-			"value": "DestinationDB"
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_userName": {
-			"value": "Mervin"
 		},
 		"RestService1_properties_typeProperties_url": {
 			"value": "https://dummy.restapiexample.com/api/v1/employee"

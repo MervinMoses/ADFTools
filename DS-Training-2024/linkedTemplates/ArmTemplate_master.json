@@ -19,9 +19,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseAlbinTest'"
 		},
-		"AzureSqlDatabaseTest_password": {
+		"AzureSqlDatabaseTest_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'AzureSqlDatabaseTest'"
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseTest'"
 		},
 		"SqlServer1_password": {
 			"type": "secureString",
@@ -54,18 +54,6 @@
 		"sqldbexcersie_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'sqldbexcersie'"
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "azure-sql-storage1.database.windows.net"
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "DestinationDB"
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "Mervin"
 		},
 		"RestService1_properties_typeProperties_url": {
 			"type": "string",
@@ -211,17 +199,8 @@
 					"AzureSqlDatabaseAlbinTest_connectionString": {
 						"value": "[parameters('AzureSqlDatabaseAlbinTest_connectionString')]"
 					},
-					"AzureSqlDatabaseTest_password": {
-						"value": "[parameters('AzureSqlDatabaseTest_password')]"
-					},
-					"AzureSqlDatabaseTest_properties_typeProperties_server": {
-						"value": "[parameters('AzureSqlDatabaseTest_properties_typeProperties_server')]"
-					},
-					"AzureSqlDatabaseTest_properties_typeProperties_database": {
-						"value": "[parameters('AzureSqlDatabaseTest_properties_typeProperties_database')]"
-					},
-					"AzureSqlDatabaseTest_properties_typeProperties_userName": {
-						"value": "[parameters('AzureSqlDatabaseTest_properties_typeProperties_userName')]"
+					"AzureSqlDatabaseTest_connectionString": {
+						"value": "[parameters('AzureSqlDatabaseTest_connectionString')]"
 					},
 					"RestService1_properties_typeProperties_url": {
 						"value": "[parameters('RestService1_properties_typeProperties_url')]"

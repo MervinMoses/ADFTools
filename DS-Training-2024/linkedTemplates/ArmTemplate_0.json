@@ -19,21 +19,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseAlbinTest'"
 		},
-		"AzureSqlDatabaseTest_password": {
+		"AzureSqlDatabaseTest_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'AzureSqlDatabaseTest'"
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "azure-sql-storage1.database.windows.net"
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "DestinationDB"
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "Mervin"
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseTest'"
 		},
 		"RestService1_properties_typeProperties_url": {
 			"type": "string",
@@ -177,17 +165,7 @@
 				"annotations": [],
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"server": "[parameters('AzureSqlDatabaseTest_properties_typeProperties_server')]",
-					"database": "[parameters('AzureSqlDatabaseTest_properties_typeProperties_database')]",
-					"encrypt": "optional",
-					"trustServerCertificate": false,
-					"hostNameInCertificate": "",
-					"authenticationType": "SQL",
-					"userName": "[parameters('AzureSqlDatabaseTest_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('AzureSqlDatabaseTest_password')]"
-					}
+					"connectionString": "[parameters('AzureSqlDatabaseTest_connectionString')]"
 				}
 			},
 			"dependsOn": []

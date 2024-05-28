@@ -19,9 +19,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseAlbinTest'"
 		},
-		"AzureSqlDatabaseTest_password": {
+		"AzureSqlDatabaseTest_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'AzureSqlDatabaseTest'"
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseTest'"
 		},
 		"SqlServer1_password": {
 			"type": "secureString",
@@ -54,18 +54,6 @@
 		"sqldbexcersie_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'sqldbexcersie'"
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "azure-sql-storage1.database.windows.net"
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "DestinationDB"
-		},
-		"AzureSqlDatabaseTest_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "Mervin"
 		},
 		"RestService1_properties_typeProperties_url": {
 			"type": "string",
@@ -3257,17 +3245,7 @@
 				"annotations": [],
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"server": "[parameters('AzureSqlDatabaseTest_properties_typeProperties_server')]",
-					"database": "[parameters('AzureSqlDatabaseTest_properties_typeProperties_database')]",
-					"encrypt": "optional",
-					"trustServerCertificate": false,
-					"hostNameInCertificate": "",
-					"authenticationType": "SQL",
-					"userName": "[parameters('AzureSqlDatabaseTest_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('AzureSqlDatabaseTest_password')]"
-					}
+					"connectionString": "[parameters('AzureSqlDatabaseTest_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -3718,6 +3696,111 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Copy data1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": "select distinct id from [dbo].[webcontent] where id<6",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerwebcontent",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup1').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy data2",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": "@concat('select * from [dbo].[webcontent] where id=','''',item().id,'''')",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false,
+											"disableMetricsCollection": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "SqlServerFetchWebcontent",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "AzureSqlTableWeb",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
 					}
 				],
 				"policy": {
@@ -3727,7 +3810,9 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/RestResourceWebContent')]",
-				"[concat(variables('factoryId'), '/datasets/SqlServerwebcontent')]"
+				"[concat(variables('factoryId'), '/datasets/SqlServerwebcontent')]",
+				"[concat(variables('factoryId'), '/datasets/SqlServerFetchWebcontent')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTableWeb')]"
 			]
 		},
 		{
@@ -3782,6 +3867,82 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/SqlServerExamDB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlServerFetchWebcontent')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlServerExamDB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "userid",
+						"type": "varchar"
+					},
+					{
+						"name": "id",
+						"type": "varchar"
+					},
+					{
+						"name": "title",
+						"type": "varchar"
+					},
+					{
+						"name": "body",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "webcontent"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SqlServerExamDB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableWeb')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseTest",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "userid",
+						"type": "varchar"
+					},
+					{
+						"name": "id",
+						"type": "varchar"
+					},
+					{
+						"name": "title",
+						"type": "varchar"
+					},
+					{
+						"name": "body",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "webcontentAzure"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseTest')]"
 			]
 		}
 	]
