@@ -26,7 +26,15 @@
 					"name": "Products"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable4",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "selectidname"
@@ -56,10 +64,16 @@
 					"name": "surrogateKey1"
 				},
 				{
-					"name": "select2"
+					"name": "IdonTop"
 				},
 				{
 					"name": "rank1"
+				},
+				{
+					"name": "Profit"
+				},
+				{
+					"name": "aggregate1"
 				}
 			],
 			"scriptLines": [
@@ -188,9 +202,21 @@
 				"          ProductCategoryName",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select2",
-				"select2 rank(asc(StandardCost, true),",
-				"     output(Rank as long)) ~> rank1"
+				"     skipDuplicateMapOutputs: true) ~> IdonTop",
+				"Profit rank(desc(Profit_margin, true),",
+				"     output(Rank as long)) ~> rank1",
+				"IdonTop derive(Profit_margin = ListPrice-StandardCost) ~> Profit",
+				"rank1 aggregate() ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
