@@ -1,0 +1,24 @@
+{
+	"name": "DelimitedTextRONA",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageForSales",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "RONA.csv",
+				"container": "output-file"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

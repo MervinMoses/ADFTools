@@ -1,0 +1,42 @@
+{
+	"name": "SqlServersales",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerTableTesting",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "ProductID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Date",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Zip",
+				"type": "nvarchar"
+			},
+			{
+				"name": "units",
+				"type": "nvarchar"
+			},
+			{
+				"name": "revenue",
+				"type": "nvarchar"
+			},
+			{
+				"name": "country",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tot_sales"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

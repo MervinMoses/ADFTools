@@ -1,0 +1,17 @@
+{
+	"name": "SqlServerTableTesting",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerTestingWeb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "webamp"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

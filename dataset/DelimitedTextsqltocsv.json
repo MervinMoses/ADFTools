@@ -1,0 +1,40 @@
+{
+	"name": "DelimitedTextsqltocsv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageMca",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat('usCanada',utcnow(),'.json')",
+					"type": "Expression"
+				},
+				"container": "csv-files-trail"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Roll No",
+				"type": "String"
+			},
+			{
+				"name": "Name",
+				"type": "String"
+			},
+			{
+				"name": "Guide Name",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,17 @@
+{
+	"name": "SqlServerTable5",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerTableTesting",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "canUS"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

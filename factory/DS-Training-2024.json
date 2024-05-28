@@ -1,0 +1,9 @@
+{
+	"name": "DS-Training-2024",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "53857193-cc03-4367-a1cd-01f7ee442ae0",
+		"tenantId": "7b2c395b-ef6c-46fa-a482-e36e8cb2c8c9"
+	}
+}

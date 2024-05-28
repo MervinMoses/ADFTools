@@ -1,0 +1,21 @@
+{
+	"name": "sqldbexcersie",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "DESKTOP-14J830G\\SQLEXPRESS",
+			"database": "excerise",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "Windows",
+			"userName": "DESKTOP-14J830G\\Admin",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI2OTA5YjAzMy0yMjlkLTRkNWEtOTc0ZS1mMzEyNGI2Y2U4ZGMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntimeExcersie",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "AzureSqlTableAlbin",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseAlbinTest",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "AlbinTest"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

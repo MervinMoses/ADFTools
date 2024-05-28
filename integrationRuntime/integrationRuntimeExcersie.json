@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntimeExcersie",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

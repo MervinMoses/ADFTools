@@ -1,0 +1,22 @@
+{
+	"name": "SqlServerTestingWeb",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "DESKTOP-14J830G\\SQLEXPRESS",
+			"database": "testing",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"hostNameInCertificate": "",
+			"authenticationType": "Windows",
+			"userName": "DESKTOP-14J830G\\Admin",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJlZmUzNGY3Yy1mZWE3LTRiZTEtOWJhYi1mY2E5M2MzMWUyMjYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntimeExcersie",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

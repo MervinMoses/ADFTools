@@ -1,0 +1,42 @@
+{
+	"name": "SqlServeAd2022",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerAd2022",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "BusinessEntityID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "EmailAddressID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "EmailAddress",
+				"type": "nvarchar"
+			},
+			{
+				"name": "rowguid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "ModifiedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "Person",
+			"table": "EmailAddress"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
