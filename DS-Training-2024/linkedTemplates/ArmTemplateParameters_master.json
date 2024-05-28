@@ -1,0 +1,141 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "DS-Training-2024"
+		},
+		"AzureBlobStorageForSales_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorageMca_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabaseAlbinTest_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabaseTest_password": {
+			"value": ""
+		},
+		"SqlServer1_password": {
+			"value": ""
+		},
+		"SqlServer2_password": {
+			"value": ""
+		},
+		"SqlServerAd2022_password": {
+			"value": ""
+		},
+		"SqlServerExamDB_password": {
+			"value": ""
+		},
+		"SqlServerTableTesting_password": {
+			"value": ""
+		},
+		"SqlServerTestingWeb_password": {
+			"value": ""
+		},
+		"sqldbadventure_password": {
+			"value": ""
+		},
+		"sqldbexcersie_password": {
+			"value": ""
+		},
+		"AzureSqlDatabaseTest_properties_typeProperties_server": {
+			"value": "azure-sql-storage1.database.windows.net"
+		},
+		"AzureSqlDatabaseTest_properties_typeProperties_database": {
+			"value": "DestinationDB"
+		},
+		"AzureSqlDatabaseTest_properties_typeProperties_userName": {
+			"value": "Mervin"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"value": "https://dummy.restapiexample.com/api/v1/employee"
+		},
+		"RestService1Employee_properties_typeProperties_url": {
+			"value": "https://dummy.restapiexample.com/api/v1/employee"
+		},
+		"SqlServer1_properties_typeProperties_server": {
+			"value": "DESKTOP-14J830G\\SQLEXPRESS"
+		},
+		"SqlServer1_properties_typeProperties_database": {
+			"value": "testing"
+		},
+		"SqlServer1_properties_typeProperties_userName": {
+			"value": "DESKTOP-14J830G\\Admin"
+		},
+		"SqlServer2_properties_typeProperties_server": {
+			"value": "DESKTOP-14J830G\\SQLEXPRESS"
+		},
+		"SqlServer2_properties_typeProperties_database": {
+			"value": "testing"
+		},
+		"SqlServer2_properties_typeProperties_userName": {
+			"value": "DESKTOP-14J830G\\Admin"
+		},
+		"SqlServerAd2022_properties_typeProperties_server": {
+			"value": "DESKTOP-14J830G\\SQLEXPRESS"
+		},
+		"SqlServerAd2022_properties_typeProperties_database": {
+			"value": "AdventureWorks2022"
+		},
+		"SqlServerAd2022_properties_typeProperties_userName": {
+			"value": "DESKTOP-14J830G\\Admin"
+		},
+		"SqlServerExamDB_properties_typeProperties_server": {
+			"value": "DESKTOP-14J830G\\SQLEXPRESS"
+		},
+		"SqlServerExamDB_properties_typeProperties_database": {
+			"value": "AzureExam"
+		},
+		"SqlServerExamDB_properties_typeProperties_userName": {
+			"value": "DESKTOP-14J830G\\Admin"
+		},
+		"SqlServerTableTesting_properties_typeProperties_server": {
+			"value": "DESKTOP-14J830G\\SQLEXPRESS"
+		},
+		"SqlServerTableTesting_properties_typeProperties_database": {
+			"value": "testing"
+		},
+		"SqlServerTableTesting_properties_typeProperties_userName": {
+			"value": "DESKTOP-14J830G\\Admin"
+		},
+		"SqlServerTestingWeb_properties_typeProperties_server": {
+			"value": "DESKTOP-14J830G\\SQLEXPRESS"
+		},
+		"SqlServerTestingWeb_properties_typeProperties_database": {
+			"value": "testing"
+		},
+		"SqlServerTestingWeb_properties_typeProperties_userName": {
+			"value": "DESKTOP-14J830G\\Admin"
+		},
+		"sqldbadventure_properties_typeProperties_server": {
+			"value": "DESKTOP-14J830G\\SQLEXPRESS"
+		},
+		"sqldbadventure_properties_typeProperties_database": {
+			"value": "AdventureWorks2008R2"
+		},
+		"sqldbadventure_properties_typeProperties_userName": {
+			"value": "DESKTOP-14J830G\\Admin"
+		},
+		"sqldbexcersie_properties_typeProperties_server": {
+			"value": "DESKTOP-14J830G\\SQLEXPRESS"
+		},
+		"sqldbexcersie_properties_typeProperties_database": {
+			"value": "excerise"
+		},
+		"sqldbexcersie_properties_typeProperties_userName": {
+			"value": "DESKTOP-14J830G\\Admin"
+		},
+		"RestService2_properties_typeProperties_url": {
+			"value": "https://jsonplaceholder.typicode.com/posts"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
