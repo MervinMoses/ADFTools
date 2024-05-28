@@ -6,14 +6,14 @@
 			"sources": [
 				{
 					"name": "AzureSqlTable3",
-					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~>  AzureSqlTable3",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AzureSqlTable3",
 					"dataset": {
 						"referenceName": "AzureSqlTable3",
 						"type": "DatasetReference"
 					}
 				}
 			],
-			"script": "section Section1;\r\nshared AzureSqlTable3 = let AdfDoc = Sql.Database(\"azure-sql-storage1.database.windows.net\", \"AdventureWorks2022\", [CreateNavigationProperties = false]), InputTable = AdfDoc{[Schema=\"Production\",Item=\"Product\"]}[Data] in InputTable;\r\nshared UserQuery = let Source = #\"AzureSqlTable3\",\r\n  #\"Filtered rows\" = Table.SelectRows(Source, each ([FinishedGoodsFlag] = true) and ([MakeFlag] = false)),\r\n  #\"Sorted rows\" = Table.Sort(#\"Filtered rows\", {{\"ProductNumber\", Order.Ascending}}),\r\n  #\"Filtered rows 1\" = Table.SelectRows(#\"Sorted rows\", each ([Color] <> null) and ([Size] <> null)),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Filtered rows 1\", {\"SizeUnitMeasureCode\", \"WeightUnitMeasureCode\", \"Weight\", \"DaysToManufacture\", \"Class\"}),\r\n  #\"Filtered rows 2\" = Table.SelectRows(#\"Removed columns\", each ([SellEndDate] <> null)),\r\n  #\"Removed columns 1\" = Table.RemoveColumns(#\"Filtered rows 2\", {\"rowguid\", \"DiscontinuedDate\"}),\r\n  #\"Added custom\" = Table.AddColumn(#\"Removed columns 1\", \"Custom\", each [SellEndDate] - [SellStartDate]),\r\n  #\"Renamed columns\" = Table.RenameColumns(#\"Added custom\", {{\"Custom\", \"Total Days\"}}) in #\"Renamed columns\";\r\n",
+			"script": "section Section1;\r\nshared AzureSqlTable3 = let AdfDoc = Sql.Database(\"azure-sql-storage1.database.windows.net\", \"AdventureWorks2022\", [CreateNavigationProperties = false]), InputTable = AdfDoc{[Schema=\"Production\",Item=\"Product\"]}[Data] in InputTable;\r\nshared UserQuery = let Source = #\"AzureSqlTable3\",\r\n  #\"Filtered rows\" = Table.SelectRows(Source, each ([FinishedGoodsFlag] = true) and ([MakeFlag] = false)),\r\n  #\"Sorted rows\" = Table.Sort(#\"Filtered rows\", {{\"ProductNumber\", Order.Ascending}}),\r\n  #\"Filtered rows 1\" = Table.SelectRows(#\"Sorted rows\", each ([Color] <> null) and ([Size] <> null)),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Filtered rows 1\", {\"SizeUnitMeasureCode\", \"WeightUnitMeasureCode\", \"Weight\", \"DaysToManufacture\", \"Class\"}),\r\n  #\"Filtered rows 2\" = Table.SelectRows(#\"Removed columns\", each ([SellEndDate] <> null)),\r\n  #\"Removed columns 1\" = Table.RemoveColumns(#\"Filtered rows 2\", {\"rowguid\", \"DiscontinuedDate\"}),\r\n  #\"Added custom\" = Table.AddColumn(#\"Removed columns 1\", \"Custom\", each [SellEndDate] - [SellStartDate]),\r\n  #\"Renamed columns\" = Table.RenameColumns(#\"Added custom\", {{\"Custom\", \"Total Days\"}}),\r\n  #\"Removed columns 2\" = Table.RemoveColumns(#\"Renamed columns\", {\"Total Days\"}),\r\n  #\"Added custom 1\" = Table.TransformColumnTypes(Table.AddColumn(#\"Removed columns 2\", \"Profit\", each [ListPrice] - [StandardCost]), {{\"Profit\", Currency.Type}}) in #\"Added custom 1\";\r\n",
 			"documentLocale": "en-us"
 		}
 	}
