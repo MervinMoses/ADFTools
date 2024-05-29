@@ -315,6 +315,30 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Rest of the countries",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXAM_CSV_TO_SQL_US_SALES",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXAM_GETMETA_FOREACH",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
 					}
 				],
 				"policy": {
@@ -325,7 +349,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DelimitedTextussales')]",
-				"[concat(variables('factoryId'), '/datasets/SqlServerExamDBUSSales')]"
+				"[concat(variables('factoryId'), '/datasets/SqlServerExamDBUSSales')]",
+				"[concat(variables('factoryId'), '/pipelines/EXAM_GETMETA_FOREACH')]"
 			]
 		},
 		{

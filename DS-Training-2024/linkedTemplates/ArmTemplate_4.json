@@ -13,75 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/sql_to_csv')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SqlServerTableTesting",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DelimitedTextsqltocsv",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-22T12:49:29Z"
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/webactivity_to_sql')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -205,6 +136,179 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2024-05-23T06:23:55Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EXAM_CSV_TO_SQL_US_SALES')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "EXAM_CSV_TO_SQL_US_SALES",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"additionalColumns": [
+									{
+										"name": "country",
+										"value": "USA"
+									}
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SqlServerSink",
+								"preCopyScript": "truncate table [dbo].[total_sales] ",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ProductID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ProductID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Date",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Date",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Zip",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Zip",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Units",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "units",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Revenue",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "revenue",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "country",
+											"type": "String"
+										},
+										"sink": {
+											"name": "country",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedTextussales",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SqlServerExamDBUSSales",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Rest of the countries",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXAM_CSV_TO_SQL_US_SALES",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXAM_GETMETA_FOREACH",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-27T13:58:39Z"
 			},
 			"dependsOn": []
 		}
