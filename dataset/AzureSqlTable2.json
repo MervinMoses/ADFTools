@@ -131,7 +131,7 @@
 		],
 		"typeProperties": {
 			"schema": "Production",
-			"table": "Product"
+			"table": "testdata"
 		}
 	}
 }
