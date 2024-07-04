@@ -153,7 +153,10 @@
 							"typeProperties": {
 								"source": {
 									"type": "SqlServerSource",
-									"sqlReaderQuery": "@concat('select * from [dbo].[webcontent] where id=','''',item().id,'''')",
+									"sqlReaderQuery": {
+										"value": "@concat('select * from [dbo].[webcontent] where id=','''',item().id,'''')",
+										"type": "Expression"
+									},
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
@@ -190,6 +193,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "Exam"
+		},
 		"annotations": []
 	}
 }
