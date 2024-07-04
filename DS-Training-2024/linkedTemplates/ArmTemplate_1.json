@@ -19,14 +19,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'SqlServerAd2022'"
 		},
-		"SqlServerExamDB_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'SqlServerExamDB'"
-		},
-		"SqlServerTableTesting_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'SqlServerTableTesting'"
-		},
 		"SqlServer1_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "DESKTOP-14J830G\\SQLEXPRESS"
@@ -62,36 +54,56 @@
 		"SqlServerAd2022_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "DESKTOP-14J830G\\Admin"
-		},
-		"SqlServerExamDB_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "DESKTOP-14J830G\\SQLEXPRESS"
-		},
-		"SqlServerExamDB_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "AzureExam"
-		},
-		"SqlServerExamDB_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "DESKTOP-14J830G\\Admin"
-		},
-		"SqlServerTableTesting_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "DESKTOP-14J830G\\SQLEXPRESS"
-		},
-		"SqlServerTableTesting_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "testing"
-		},
-		"SqlServerTableTesting_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "DESKTOP-14J830G\\Admin"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableTest2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseTest",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ProductID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Date",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Zip",
+						"type": "nvarchar"
+					},
+					{
+						"name": "units",
+						"type": "nvarchar"
+					},
+					{
+						"name": "revenue",
+						"type": "nvarchar"
+					},
+					{
+						"name": "country",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tot_sales"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTableWeb')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -604,6 +616,53 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/azure_lake')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "USSales.csv",
+						"fileSystem": "us-sales"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ProductID",
+						"type": "String"
+					},
+					{
+						"name": "Date",
+						"type": "String"
+					},
+					{
+						"name": "Zip",
+						"type": "String"
+					},
+					{
+						"name": "Units",
+						"type": "String"
+					},
+					{
+						"name": "Revenue",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SqlServer1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -615,7 +674,6 @@
 					"database": "[parameters('SqlServer1_properties_typeProperties_database')]",
 					"encrypt": "optional",
 					"trustServerCertificate": false,
-					"hostNameInCertificate": "",
 					"authenticationType": "Windows",
 					"userName": "[parameters('SqlServer1_properties_typeProperties_userName')]",
 					"password": {
@@ -642,7 +700,6 @@
 					"database": "[parameters('SqlServer2_properties_typeProperties_database')]",
 					"encrypt": "optional",
 					"trustServerCertificate": false,
-					"hostNameInCertificate": "",
 					"authenticationType": "Windows",
 					"userName": "[parameters('SqlServer2_properties_typeProperties_userName')]",
 					"password": {
@@ -669,66 +726,11 @@
 					"database": "[parameters('SqlServerAd2022_properties_typeProperties_database')]",
 					"encrypt": "optional",
 					"trustServerCertificate": false,
-					"hostNameInCertificate": "",
 					"authenticationType": "Windows",
 					"userName": "[parameters('SqlServerAd2022_properties_typeProperties_userName')]",
 					"password": {
 						"type": "SecureString",
 						"value": "[parameters('SqlServerAd2022_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeExcersie",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SqlServerExamDB')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "SqlServer",
-				"typeProperties": {
-					"server": "[parameters('SqlServerExamDB_properties_typeProperties_server')]",
-					"database": "[parameters('SqlServerExamDB_properties_typeProperties_database')]",
-					"encrypt": "optional",
-					"trustServerCertificate": false,
-					"hostNameInCertificate": "",
-					"authenticationType": "Windows",
-					"userName": "[parameters('SqlServerExamDB_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('SqlServerExamDB_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeExcersie",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SqlServerTableTesting')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "SqlServer",
-				"typeProperties": {
-					"server": "[parameters('SqlServerTableTesting_properties_typeProperties_server')]",
-					"database": "[parameters('SqlServerTableTesting_properties_typeProperties_database')]",
-					"encrypt": "optional",
-					"trustServerCertificate": false,
-					"hostNameInCertificate": "",
-					"authenticationType": "Windows",
-					"userName": "[parameters('SqlServerTableTesting_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('SqlServerTableTesting_password')]"
 					}
 				},
 				"connectVia": {

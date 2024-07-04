@@ -11,6 +11,9 @@
 		"AzureBlobStorageMca_connectionString": {
 			"value": ""
 		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
 		"AzureSqlDatabase1_connectionString": {
 			"value": ""
 		},
@@ -43,6 +46,9 @@
 		},
 		"sqldbexcersie_password": {
 			"value": ""
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://satesting24.dfs.core.windows.net/"
 		},
 		"RestService1_properties_typeProperties_url": {
 			"value": "https://dummy.restapiexample.com/api/v1/employee"

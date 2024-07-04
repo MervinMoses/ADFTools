@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageMca'"
 		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
 		"AzureSqlDatabase1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
@@ -58,6 +62,10 @@
 		"sqldbexcersie_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'sqldbexcersie'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://satesting24.dfs.core.windows.net/"
 		},
 		"RestService1_properties_typeProperties_url": {
 			"type": "string",
@@ -204,6 +212,9 @@
 					"AzureBlobStorageMca_connectionString": {
 						"value": "[parameters('AzureBlobStorageMca_connectionString')]"
 					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
 					},
@@ -212,6 +223,9 @@
 					},
 					"AzureSqlDatabaseTest_connectionString": {
 						"value": "[parameters('AzureSqlDatabaseTest_connectionString')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
 					},
 					"RestService1_properties_typeProperties_url": {
 						"value": "[parameters('RestService1_properties_typeProperties_url')]"
@@ -252,12 +266,6 @@
 					"SqlServerAd2022_password": {
 						"value": "[parameters('SqlServerAd2022_password')]"
 					},
-					"SqlServerExamDB_password": {
-						"value": "[parameters('SqlServerExamDB_password')]"
-					},
-					"SqlServerTableTesting_password": {
-						"value": "[parameters('SqlServerTableTesting_password')]"
-					},
 					"SqlServer1_properties_typeProperties_server": {
 						"value": "[parameters('SqlServer1_properties_typeProperties_server')]"
 					},
@@ -284,24 +292,6 @@
 					},
 					"SqlServerAd2022_properties_typeProperties_userName": {
 						"value": "[parameters('SqlServerAd2022_properties_typeProperties_userName')]"
-					},
-					"SqlServerExamDB_properties_typeProperties_server": {
-						"value": "[parameters('SqlServerExamDB_properties_typeProperties_server')]"
-					},
-					"SqlServerExamDB_properties_typeProperties_database": {
-						"value": "[parameters('SqlServerExamDB_properties_typeProperties_database')]"
-					},
-					"SqlServerExamDB_properties_typeProperties_userName": {
-						"value": "[parameters('SqlServerExamDB_properties_typeProperties_userName')]"
-					},
-					"SqlServerTableTesting_properties_typeProperties_server": {
-						"value": "[parameters('SqlServerTableTesting_properties_typeProperties_server')]"
-					},
-					"SqlServerTableTesting_properties_typeProperties_database": {
-						"value": "[parameters('SqlServerTableTesting_properties_typeProperties_database')]"
-					},
-					"SqlServerTableTesting_properties_typeProperties_userName": {
-						"value": "[parameters('SqlServerTableTesting_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -323,6 +313,12 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"SqlServerExamDB_password": {
+						"value": "[parameters('SqlServerExamDB_password')]"
+					},
+					"SqlServerTableTesting_password": {
+						"value": "[parameters('SqlServerTableTesting_password')]"
+					},
 					"SqlServerTestingWeb_password": {
 						"value": "[parameters('SqlServerTestingWeb_password')]"
 					},
@@ -331,6 +327,24 @@
 					},
 					"sqldbexcersie_password": {
 						"value": "[parameters('sqldbexcersie_password')]"
+					},
+					"SqlServerExamDB_properties_typeProperties_server": {
+						"value": "[parameters('SqlServerExamDB_properties_typeProperties_server')]"
+					},
+					"SqlServerExamDB_properties_typeProperties_database": {
+						"value": "[parameters('SqlServerExamDB_properties_typeProperties_database')]"
+					},
+					"SqlServerExamDB_properties_typeProperties_userName": {
+						"value": "[parameters('SqlServerExamDB_properties_typeProperties_userName')]"
+					},
+					"SqlServerTableTesting_properties_typeProperties_server": {
+						"value": "[parameters('SqlServerTableTesting_properties_typeProperties_server')]"
+					},
+					"SqlServerTableTesting_properties_typeProperties_database": {
+						"value": "[parameters('SqlServerTableTesting_properties_typeProperties_database')]"
+					},
+					"SqlServerTableTesting_properties_typeProperties_userName": {
+						"value": "[parameters('SqlServerTableTesting_properties_typeProperties_userName')]"
 					},
 					"SqlServerTestingWeb_properties_typeProperties_server": {
 						"value": "[parameters('SqlServerTestingWeb_properties_typeProperties_server')]"
