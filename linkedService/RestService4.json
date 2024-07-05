@@ -1,0 +1,12 @@
+{
+	"name": "RestService4",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
