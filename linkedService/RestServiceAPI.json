@@ -1,0 +1,12 @@
+{
+	"name": "RestServiceAPI",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://freetestapi.com/api/v1/cars",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
