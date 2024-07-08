@@ -1,17 +1,16 @@
 {
-	"name": "AzureSqlTable1",
+	"name": "azurebatters",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureSqlDatabaseTest",
+			"referenceName": "AzureSqlDatabase1",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "dbo",
-			"table": "tot_sales"
+			"schema": "stage",
+			"table": "batters"
 		}
-	},
-	"type": "Microsoft.DataFactory/factories/datasets"
+	}
 }

@@ -1,0 +1,19 @@
+{
+	"name": "azurejson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageForSales",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "rawDataTest.json",
+				"container": "output-file"
+			}
+		},
+		"schema": {}
+	}
+}
