@@ -1,0 +1,51 @@
+{
+	"name": "Json2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageForSales",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "sample5.json",
+				"container": "raw-json"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"movies": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"title": {
+								"type": "string"
+							},
+							"year": {
+								"type": "integer"
+							},
+							"cast": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"role": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

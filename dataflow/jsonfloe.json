@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "jsonfloe",
 	"properties": {
 		"folder": {
 			"name": "SharmilaAssignments"
@@ -9,7 +9,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Json1",
+						"referenceName": "Json2",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
@@ -18,7 +18,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "AzureSqlTable4",
+						"referenceName": "Azurejsonfile",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -26,47 +26,26 @@
 			],
 			"transformations": [
 				{
-					"name": "flatten1"
-				},
-				{
-					"name": "flatten2"
+					"name": "flatten3"
 				}
 			],
 			"scriptLines": [
 				"source(output(",
-				"          id as string,",
-				"          type as string,",
-				"          name as string,",
-				"          ppu as double,",
-				"          batters as (batter as (id as string, type as string)[]),",
-				"          topping as (id as string, type as string)[]",
+				"          movies as (title as string, year as integer, cast as (name as string, role as string)[])[]",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     limit: 1000,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'documentPerLine') ~> source1",
-				"source1 foldDown(unroll(topping),",
+				"     documentForm: 'singleDocument') ~> source1",
+				"source1 foldDown(unroll(movies),",
 				"     mapColumn(",
-				"          id,",
-				"          type,",
-				"          name,",
-				"          batters = topping.id,",
-				"          topping = topping.type",
+				"          movies = movies.title,",
+				"          year = movies.year",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1",
-				"flatten1 foldDown(unroll(batters.batter),",
-				"     mapColumn(",
-				"          id,",
-				"          type,",
-				"          name,",
-				"          ppu = batters.batter.id,",
-				"          batters = batters.batter.type,",
-				"          topping",
-				"     ),",
-				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten2",
-				"flatten2 sink(allowSchemaDrift: true,",
+				"     skipDuplicateMapOutputs: false) ~> flatten3",
+				"flatten3 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
