@@ -83,6 +83,14 @@
 			"type": "string",
 			"defaultValue": "https://jsonplaceholder.typicode.com/posts"
 		},
+		"RestService4_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb"
+		},
+		"RestServiceAPI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://freetestapi.com/api/v1/cars"
+		},
 		"SqlServer1_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "DESKTOP-14J830G\\SQLEXPRESS"
@@ -238,6 +246,12 @@
 					},
 					"RestService3_properties_typeProperties_url": {
 						"value": "[parameters('RestService3_properties_typeProperties_url')]"
+					},
+					"RestService4_properties_typeProperties_url": {
+						"value": "[parameters('RestService4_properties_typeProperties_url')]"
+					},
+					"RestServiceAPI_properties_typeProperties_url": {
+						"value": "[parameters('RestServiceAPI_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -260,12 +274,6 @@
 					"SqlServer1_password": {
 						"value": "[parameters('SqlServer1_password')]"
 					},
-					"SqlServer2_password": {
-						"value": "[parameters('SqlServer2_password')]"
-					},
-					"SqlServerAd2022_password": {
-						"value": "[parameters('SqlServerAd2022_password')]"
-					},
 					"SqlServer1_properties_typeProperties_server": {
 						"value": "[parameters('SqlServer1_properties_typeProperties_server')]"
 					},
@@ -274,24 +282,6 @@
 					},
 					"SqlServer1_properties_typeProperties_userName": {
 						"value": "[parameters('SqlServer1_properties_typeProperties_userName')]"
-					},
-					"SqlServer2_properties_typeProperties_server": {
-						"value": "[parameters('SqlServer2_properties_typeProperties_server')]"
-					},
-					"SqlServer2_properties_typeProperties_database": {
-						"value": "[parameters('SqlServer2_properties_typeProperties_database')]"
-					},
-					"SqlServer2_properties_typeProperties_userName": {
-						"value": "[parameters('SqlServer2_properties_typeProperties_userName')]"
-					},
-					"SqlServerAd2022_properties_typeProperties_server": {
-						"value": "[parameters('SqlServerAd2022_properties_typeProperties_server')]"
-					},
-					"SqlServerAd2022_properties_typeProperties_database": {
-						"value": "[parameters('SqlServerAd2022_properties_typeProperties_database')]"
-					},
-					"SqlServerAd2022_properties_typeProperties_userName": {
-						"value": "[parameters('SqlServerAd2022_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -313,6 +303,12 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"SqlServer2_password": {
+						"value": "[parameters('SqlServer2_password')]"
+					},
+					"SqlServerAd2022_password": {
+						"value": "[parameters('SqlServerAd2022_password')]"
+					},
 					"SqlServerExamDB_password": {
 						"value": "[parameters('SqlServerExamDB_password')]"
 					},
@@ -327,6 +323,24 @@
 					},
 					"sqldbexcersie_password": {
 						"value": "[parameters('sqldbexcersie_password')]"
+					},
+					"SqlServer2_properties_typeProperties_server": {
+						"value": "[parameters('SqlServer2_properties_typeProperties_server')]"
+					},
+					"SqlServer2_properties_typeProperties_database": {
+						"value": "[parameters('SqlServer2_properties_typeProperties_database')]"
+					},
+					"SqlServer2_properties_typeProperties_userName": {
+						"value": "[parameters('SqlServer2_properties_typeProperties_userName')]"
+					},
+					"SqlServerAd2022_properties_typeProperties_server": {
+						"value": "[parameters('SqlServerAd2022_properties_typeProperties_server')]"
+					},
+					"SqlServerAd2022_properties_typeProperties_database": {
+						"value": "[parameters('SqlServerAd2022_properties_typeProperties_database')]"
+					},
+					"SqlServerAd2022_properties_typeProperties_userName": {
+						"value": "[parameters('SqlServerAd2022_properties_typeProperties_userName')]"
 					},
 					"SqlServerExamDB_properties_typeProperties_server": {
 						"value": "[parameters('SqlServerExamDB_properties_typeProperties_server')]"
