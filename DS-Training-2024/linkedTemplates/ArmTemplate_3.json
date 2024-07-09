@@ -13,6 +13,74 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SqlServerExamDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlServerExamDB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "email",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "person_Emails"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlServerExamDBUSSales')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlServerExamDB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "ProductID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Date",
+						"type": "date"
+					},
+					{
+						"name": "Zip",
+						"type": "nvarchar"
+					},
+					{
+						"name": "units",
+						"type": "nvarchar"
+					},
+					{
+						"name": "revenue",
+						"type": "nvarchar"
+					},
+					{
+						"name": "country",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "total_sales"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SqlServerExamJsonRaw')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -910,29 +978,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/powerquery1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "AzureSqlTable3",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AzureSqlTable3",
-							"dataset": {
-								"referenceName": "AzureSqlTable3",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared AzureSqlTable3 = let AdfDoc = Sql.Database(\"azure-sql-storage1.database.windows.net\", \"AdventureWorks2022\", [CreateNavigationProperties = false]), InputTable = AdfDoc{[Schema=\"Production\",Item=\"Product\"]}[Data] in InputTable;\r\nshared UserQuery = let Source = #\"AzureSqlTable3\",\r\n  #\"Filtered rows\" = Table.SelectRows(Source, each ([FinishedGoodsFlag] = true) and ([MakeFlag] = false)),\r\n  #\"Sorted rows\" = Table.Sort(#\"Filtered rows\", {{\"ProductNumber\", Order.Ascending}}),\r\n  #\"Filtered rows 1\" = Table.SelectRows(#\"Sorted rows\", each ([Color] <> null) and ([Size] <> null)),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Filtered rows 1\", {\"SizeUnitMeasureCode\", \"WeightUnitMeasureCode\", \"Weight\", \"DaysToManufacture\", \"Class\"}),\r\n  #\"Filtered rows 2\" = Table.SelectRows(#\"Removed columns\", each ([SellEndDate] <> null)),\r\n  #\"Removed columns 1\" = Table.RemoveColumns(#\"Filtered rows 2\", {\"rowguid\", \"DiscontinuedDate\"}),\r\n  #\"Added custom\" = Table.AddColumn(#\"Removed columns 1\", \"Custom\", each [SellEndDate] - [SellStartDate]),\r\n  #\"Renamed columns\" = Table.RenameColumns(#\"Added custom\", {{\"Custom\", \"Total Days\"}}),\r\n  #\"Removed columns 2\" = Table.RemoveColumns(#\"Renamed columns\", {\"Total Days\"}),\r\n  #\"Added custom 1\" = Table.TransformColumnTypes(Table.AddColumn(#\"Removed columns 2\", \"Profit\", each [ListPrice] - [StandardCost]), {{\"Profit\", Currency.Type}}) in #\"Added custom 1\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/jsonfloe')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -993,135 +1038,6 @@
 						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 					]
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PL_activity1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Lookup1",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "AzureSqlTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
-						"name": "updated_date",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Lookup1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "UTCDate",
-							"value": {
-								"value": "@formatDateTime(utcnow(), 'yyyy-MM-dd')",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set variable1",
-						"type": "SetVariable",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "query1",
-							"value": {
-								"value": "'''select * from [dbo].[DataFlowData] '''",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Stored procedure1",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "updated_date",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[dateeplace]",
-							"storedProcedureParameters": {
-								"date": {
-									"value": {
-										"value": "@variables('UTCDate')",
-										"type": "Expression"
-									},
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabaseTest",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"UTCDate": {
-						"type": "String"
-					},
-					"query1": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "Sharmila"
-				},
-				"annotations": []
 			},
 			"dependsOn": []
 		}
