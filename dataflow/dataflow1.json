@@ -1,0 +1,43 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"folder": {
+			"name": "SharmilaAssignments"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureStudentAgg",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          StudentId as string,",
+				"          StudentCode as string,",
+				"          StudentName as string,",
+				"          Date as string,",
+				"          Language as string,",
+				"          Maths as string,",
+				"          Physics as string,",
+				"          Chemistry as string,",
+				"          ComputerScience as string,",
+				"          CreatedStageDate as string,",
+				"          updateddatetime as string,",
+				"          updatedby as string,",
+				"          isdeleted as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1"
+			]
+		}
+	}
+}

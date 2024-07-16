@@ -1,0 +1,238 @@
+{
+	"name": "PL_Aggregation",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzurestudentDim",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "SUM",
+					"value": {
+						"value": "@string(add(\n    add(\n        add(\n            add(\n                int(activity('Lookup1').output.firstRow.Language),\n                int(activity('Lookup1').output.firstRow.Physics)\n            ),\n            int(activity('Lookup1').output.firstRow.Chemistry)\n        ),\n        int(activity('Lookup1').output.firstRow.ComputerScience)\n    ),\n    int(activity('Lookup1').output.firstRow.Maths)\n))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable2",
+				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "AVG",
+					"value": {
+						"value": "@string(div(float(variables('SUM')), 5))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Set variable2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dim].[sp_master_dim_studentinfo]",
+					"storedProcedureParameters": {
+						"Avg": {
+							"value": {
+								"value": "@variables('AVG')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Sum": {
+							"value": {
+								"value": "@variables('SUM')",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseTest",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup1').output.firstRow.studentid",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Set variable1_copy1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "SUM",
+								"value": {
+									"value": "@string(add(\n    add(\n        add(\n            add(\n                int(activity('Lookup1').output.firstRow.Language),\n                int(activity('Lookup1').output.firstRow.Physics)\n            ),\n            int(activity('Lookup1').output.firstRow.Chemistry)\n        ),\n        int(activity('Lookup1').output.firstRow.ComputerScience)\n    ),\n    int(activity('Lookup1').output.firstRow.Maths)\n))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable2_copy1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set variable1_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "AVG",
+								"value": {
+									"value": "@string(div(float(variables('SUM')), 5))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Stored procedure1_copy1",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dim].[sp_master_dim_studentinfo]",
+								"storedProcedureParameters": {
+									"Avg": {
+										"value": {
+											"value": "@variables('AVG')",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"studentId": {
+										"value": {
+											"value": "@item().value",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"Sum": {
+										"value": {
+											"value": "@variables('SUM')",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabaseTest",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"SUM": {
+				"type": "String"
+			},
+			"AVG": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Sharmila/Activity1"
+		},
+		"annotations": []
+	}
+}

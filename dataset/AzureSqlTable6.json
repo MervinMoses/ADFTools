@@ -1,0 +1,69 @@
+{
+	"name": "AzureSqlTable6",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseTest",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "StudentId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StudentCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StudentName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Date",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Language",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Maths",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Physics",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Chemistry",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ComputerScience",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CreatedStageDate",
+				"type": "nvarchar"
+			},
+			{
+				"name": "updateddatetime",
+				"type": "nvarchar"
+			},
+			{
+				"name": "updatedby",
+				"type": "nvarchar"
+			},
+			{
+				"name": "isdeleted",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dim",
+			"table": "studentInfo"
+		}
+	}
+}
