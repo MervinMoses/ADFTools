@@ -34,6 +34,7 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
+						"preCopyScript": "truncate table [Stage].[studentInfo]",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"tableOption": "autoCreate",
@@ -62,8 +63,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Student code",
-									"type": "String",
+									"name": "Studentcode",
 									"physicalType": "nvarchar"
 								}
 							},
@@ -74,8 +74,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Student name",
-									"type": "String",
+									"name": "Studentname",
 									"physicalType": "nvarchar"
 								}
 							},
@@ -122,8 +121,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Phiysics",
-									"type": "String",
+									"name": "Physics",
 									"physicalType": "nvarchar"
 								}
 							},
@@ -146,8 +144,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Computersicence",
-									"type": "String",
+									"name": "Computerscience",
 									"physicalType": "nvarchar"
 								}
 							},
@@ -182,6 +179,29 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_stage_dim",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"folder": {
