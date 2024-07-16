@@ -248,6 +248,29 @@
 					},
 					"waitOnCompletion": true
 				}
+			},
+			{
+				"name": "SentEmail",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DIM_Master",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Logicaltrial",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"folder": {
