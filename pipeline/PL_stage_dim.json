@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "STAGE_TABLE_CREATION",
+				"name": "DIM_TABLE_CREATION",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
 				"policy": {
@@ -23,11 +23,11 @@
 				}
 			},
 			{
-				"name": "Execute Pipeline1",
+				"name": "DIM_Master",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "STAGE_TABLE_CREATION",
+						"activity": "DIM_TABLE_CREATION",
 						"dependencyConditions": [
 							"Succeeded"
 						]
