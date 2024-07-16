@@ -87,7 +87,7 @@
 							"headers": {},
 							"url": "https://prod-91.eastus.logic.azure.com:443/workflows/91d770b22d514a988d03556c9a40bb7a/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=jVIq-8SmIa531ELL6Vgk5rVjcXTo7I_t3dM5Mo4ZFtI",
 							"body": {
-								"value": "{\n    \"to\": [\"sharmila.s@datasemantics.co\", \"mervin.m@datasemantics.co\"],\n    \"subject\":\"Trying Email\",\n    \"body\":\"Email Sent SuccessFully, using the logic apps\"\n}",
+								"value": "{\n    \"to\": [\"sharmila.s@datasemantics.co\", \"mervin.m@datasemantics.co\"],\n    \"subject\": \"Pipeline Run Status\",\n    \"body\": \"This email was able to be sent because the Pipeline ran successfully.\"\n}",
 								"type": "Expression"
 							}
 						}
@@ -365,6 +365,127 @@
 				"typeProperties": {}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_stage_dim')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DIM_TABLE_CREATION",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dim].[studentinfodetails]"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabaseTest",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Sharmila/Activity1"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseTest')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlStudentMaster')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseTest",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "StudentId",
+						"type": "nvarchar"
+					},
+					{
+						"name": "StudentCode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "StudentName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Date",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Language",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Maths",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Physics",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Chemistry",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ComputerScience",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CreatedStageDate",
+						"type": "nvarchar"
+					},
+					{
+						"name": "updateddatetime",
+						"type": "nvarchar"
+					},
+					{
+						"name": "updatedby",
+						"type": "nvarchar"
+					},
+					{
+						"name": "isdeleted",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sum",
+						"type": "nvarchar"
+					},
+					{
+						"name": "avg",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "master",
+					"table": "studentinfo"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseTest')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
@@ -665,48 +786,6 @@
 				"typeProperties": {
 					"schema": "Production",
 					"table": "Product"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTable4')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseTest",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "stage",
-					"table": "rawData.json"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseTest')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTable5')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "calculatecost"
 				}
 			},
 			"dependsOn": [

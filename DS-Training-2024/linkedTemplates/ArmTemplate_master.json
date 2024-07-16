@@ -306,15 +306,6 @@
 					"SqlServerTableTesting_password": {
 						"value": "[parameters('SqlServerTableTesting_password')]"
 					},
-					"SqlServerTestingWeb_password": {
-						"value": "[parameters('SqlServerTestingWeb_password')]"
-					},
-					"sqldbadventure_password": {
-						"value": "[parameters('sqldbadventure_password')]"
-					},
-					"sqldbexcersie_password": {
-						"value": "[parameters('sqldbexcersie_password')]"
-					},
 					"SqlServer1_properties_typeProperties_server": {
 						"value": "[parameters('SqlServer1_properties_typeProperties_server')]"
 					},
@@ -359,6 +350,35 @@
 					},
 					"SqlServerTableTesting_properties_typeProperties_userName": {
 						"value": "[parameters('SqlServerTableTesting_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DS-Training-2024_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "DS-Training-2024_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"SqlServerTestingWeb_password": {
+						"value": "[parameters('SqlServerTestingWeb_password')]"
+					},
+					"sqldbadventure_password": {
+						"value": "[parameters('sqldbadventure_password')]"
+					},
+					"sqldbexcersie_password": {
+						"value": "[parameters('sqldbexcersie_password')]"
 					},
 					"SqlServerTestingWeb_properties_typeProperties_server": {
 						"value": "[parameters('SqlServerTestingWeb_properties_typeProperties_server')]"
@@ -390,26 +410,6 @@
 				}
 			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'DS-Training-2024_ArmTemplate_1')]"
-			]
-		},
-		{
-			"name": "DS-Training-2024_ArmTemplate_3",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
-			"properties": {
-				"mode": "incremental",
-				"templateLink": {
-					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"factoryName": {
-						"value": "[parameters('factoryName')]"
-					}
-				}
-			},
-			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'DS-Training-2024_ArmTemplate_2')]"
 			]
 		},
@@ -431,6 +431,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'DS-Training-2024_ArmTemplate_3')]"
+			]
+		},
+		{
+			"name": "DS-Training-2024_ArmTemplate_5",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_5.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DS-Training-2024_ArmTemplate_4')]"
 			]
 		}
 	]
