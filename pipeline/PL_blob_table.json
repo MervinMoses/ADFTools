@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "BLOB_TABLE",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -181,11 +181,11 @@
 				]
 			},
 			{
-				"name": "Execute Pipeline1",
+				"name": "TABLE_STAGE",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Copy data1",
+						"activity": "BLOB_TABLE",
 						"dependencyConditions": [
 							"Succeeded"
 						]

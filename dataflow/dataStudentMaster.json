@@ -30,6 +30,9 @@
 				},
 				{
 					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
 				}
 			],
 			"scriptLines": [
@@ -55,7 +58,16 @@
 				"source1 derive(sum = toInteger(Language) + toInteger(Maths) + toInteger(Physics) + toInteger(ComputerScience) + toInteger(Chemistry)\r",
 				") ~> derivedColumn1",
 				"derivedColumn1 derive(AVG = sum/5) ~> derivedColumn2",
-				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"derivedColumn2 derive(Grade = case(AVG>90, 'A2', \r",
+				"AVG>80,'A1',\r",
+				"AVG > 70, 'B1',\r",
+				"AVG > 60, 'B2',\r",
+				" AVG > 50, 'C1',\r",
+				" AVG > 40, 'C2',\r",
+				" AVG > 30, 'D',\r",
+				"'E'\r",
+				")) ~> derivedColumn3",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          StudentId as string,",
@@ -78,8 +90,8 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
+				"     truncate:true,",
 				"     format: 'table',",
-				"     preSQLs:['truncate table master.studentinfo '],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"

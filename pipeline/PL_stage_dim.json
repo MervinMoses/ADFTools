@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Stored procedure1",
+				"name": "STAGE_TABLE_CREATION",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
 				"policy": {
@@ -27,7 +27,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Stored procedure1",
+						"activity": "STAGE_TABLE_CREATION",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -38,6 +38,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_dim_master",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			}
