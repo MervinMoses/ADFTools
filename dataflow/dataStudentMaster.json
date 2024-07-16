@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "dataStudentMaster",
 	"properties": {
 		"folder": {
 			"name": "SharmilaAssignments"
@@ -9,14 +9,29 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "AzureStudentAgg",
+						"referenceName": "AzurestudentDim",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlStudentMaster",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          StudentId as string,",
@@ -36,7 +51,38 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source1"
+				"     format: 'table') ~> source1",
+				"source1 derive(sum = toInteger(Language) + toInteger(Maths) + toInteger(Physics) + toInteger(ComputerScience) + toInteger(Chemistry)\r",
+				") ~> derivedColumn1",
+				"derivedColumn1 derive(AVG = sum/5) ~> derivedColumn2",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          StudentId as string,",
+				"          StudentCode as string,",
+				"          StudentName as string,",
+				"          Date as string,",
+				"          Language as string,",
+				"          Maths as string,",
+				"          Physics as string,",
+				"          Chemistry as string,",
+				"          ComputerScience as string,",
+				"          CreatedStageDate as string,",
+				"          updateddatetime as string,",
+				"          updatedby as string,",
+				"          isdeleted as string,",
+				"          sum as string,",
+				"          avg as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     preSQLs:['truncate table master.studentinfo '],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
