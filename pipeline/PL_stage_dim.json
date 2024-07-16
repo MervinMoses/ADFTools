@@ -21,29 +21,6 @@
 					"referenceName": "AzureSqlDatabaseTest",
 					"type": "LinkedServiceReference"
 				}
-			},
-			{
-				"name": "DIM_Master",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "DIM_TABLE_CREATION",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "PL_dim_master",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
-				}
 			}
 		],
 		"folder": {

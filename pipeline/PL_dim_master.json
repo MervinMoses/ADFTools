@@ -29,8 +29,6 @@
 			{
 				"name": "Execute Pipeline1",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Dim_master",

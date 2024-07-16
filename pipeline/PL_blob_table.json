@@ -202,6 +202,52 @@
 					},
 					"waitOnCompletion": true
 				}
+			},
+			{
+				"name": "DIM_Master",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Update_delete_dim",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_dim_master",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Update_delete_dim",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "TABLE_STAGE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Update_Dim",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"folder": {

@@ -18,7 +18,7 @@
 					"method": "POST",
 					"url": "https://prod-91.eastus.logic.azure.com:443/workflows/91d770b22d514a988d03556c9a40bb7a/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=jVIq-8SmIa531ELL6Vgk5rVjcXTo7I_t3dM5Mo4ZFtI",
 					"body": {
-						"value": "{\n    \"to\": [\"sharmila.s@datasemantics.co\", \"mervin.m@datasemantics.co\"],\n    \"subject\":\"Pipeline Run Status\",\n    \"body\":\"This email was able to sent because the Pipeline ran SuccessFully\"\n}",
+						"value": "{\n    \"to\": \"mervin.m@datasemantics.co\",\n    \"subject\":\"Pipeline Run Status\",\n    \"body\":\"This email was able to sent because the Pipeline ran SuccessFully\"\n}",
 						"type": "Expression"
 					}
 				}
