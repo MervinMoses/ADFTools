@@ -1,0 +1,16 @@
+{
+	"name": "AzureStudentMasterData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseTest",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "master",
+			"table": "studentInfo"
+		}
+	}
+}

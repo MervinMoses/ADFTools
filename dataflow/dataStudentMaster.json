@@ -18,7 +18,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "AzureSqlStudentMaster",
+						"referenceName": "AzureStudentMasterData",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -26,13 +26,13 @@
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
+					"name": "SumColumn"
 				},
 				{
-					"name": "derivedColumn2"
+					"name": "AvgColumn"
 				},
 				{
-					"name": "derivedColumn3"
+					"name": "GradeColumn"
 				}
 			],
 			"scriptLines": [
@@ -55,10 +55,9 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source1",
-				"source1 derive(sum = toInteger(Language) + toInteger(Maths) + toInteger(Physics) + toInteger(ComputerScience) + toInteger(Chemistry)\r",
-				") ~> derivedColumn1",
-				"derivedColumn1 derive(AVG = sum/5) ~> derivedColumn2",
-				"derivedColumn2 derive(Grade = case(AVG>90, 'A2', \r",
+				"source1 derive(sum = toInteger(Language) + toInteger(Maths) + toInteger(Physics) + toInteger(ComputerScience) + toInteger(Chemistry)) ~> SumColumn",
+				"SumColumn derive(AVG = sum/5) ~> AvgColumn",
+				"AvgColumn derive(Grade = case(AVG>90, 'A2', \r",
 				"AVG>80,'A1',\r",
 				"AVG > 70, 'B1',\r",
 				"AVG > 60, 'B2',\r",
@@ -66,32 +65,15 @@
 				" AVG > 40, 'C2',\r",
 				" AVG > 30, 'D',\r",
 				"'E'\r",
-				")) ~> derivedColumn3",
-				"derivedColumn3 sink(allowSchemaDrift: true,",
+				")) ~> GradeColumn",
+				"GradeColumn sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          StudentId as string,",
-				"          StudentCode as string,",
-				"          StudentName as string,",
-				"          Date as string,",
-				"          Language as string,",
-				"          Maths as string,",
-				"          Physics as string,",
-				"          Chemistry as string,",
-				"          ComputerScience as string,",
-				"          CreatedStageDate as string,",
-				"          updateddatetime as string,",
-				"          updatedby as string,",
-				"          isdeleted as string,",
-				"          sum as string,",
-				"          avg as string",
-				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
-				"     truncate:true,",
 				"     format: 'table',",
+				"     preSQLs:['truncate table [master].[studentinfo]'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"

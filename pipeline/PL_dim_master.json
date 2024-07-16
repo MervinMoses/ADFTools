@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "Dim_master",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -29,9 +29,11 @@
 			{
 				"name": "Execute Pipeline1",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Data flow1",
+						"activity": "Dim_master",
 						"dependencyConditions": [
 							"Succeeded"
 						]
