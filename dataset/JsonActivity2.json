@@ -1,0 +1,58 @@
+{
+	"name": "JsonActivity2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageMca",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "JsonData.json",
+				"container": "student-info"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "integer"
+				},
+				"fullName": {
+					"type": "string"
+				},
+				"country": {
+					"type": "string"
+				},
+				"email": {
+					"type": "string"
+				},
+				"phone": {
+					"type": "string"
+				},
+				"accountCreated": {
+					"type": "string"
+				},
+				"accounts": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"accountId": {
+								"type": "integer"
+							},
+							"accountBalance": {
+								"type": "integer"
+							},
+							"created": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

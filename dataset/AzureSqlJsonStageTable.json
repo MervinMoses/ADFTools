@@ -1,0 +1,16 @@
+{
+	"name": "AzureSqlJsonStageTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseTest",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "Stage",
+			"table": "JsonSampleActivity"
+		}
+	}
+}
