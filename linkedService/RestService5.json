@@ -1,0 +1,12 @@
+{
+	"name": "RestService5",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://api.the-odds-api.com/v4/sports/?apiKey=",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
