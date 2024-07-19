@@ -87,6 +87,10 @@
 			"type": "string",
 			"defaultValue": "https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb"
 		},
+		"RestService5_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.the-odds-api.com/v4/sports/?apiKey=895704cf19196886e42cf0fa4c9c6422"
+		},
 		"RestServiceAPI_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://freetestapi.com/api/v1/cars"
@@ -187,6 +191,10 @@
 			"type": "string",
 			"defaultValue": "DESKTOP-14J830G\\Admin"
 		},
+		"RestWeb1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.the-odds-api.com/v4/sports/?apiKey=895704cf19196886e42cf0fa4c9c6422"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -250,8 +258,14 @@
 					"RestService4_properties_typeProperties_url": {
 						"value": "[parameters('RestService4_properties_typeProperties_url')]"
 					},
+					"RestService5_properties_typeProperties_url": {
+						"value": "[parameters('RestService5_properties_typeProperties_url')]"
+					},
 					"RestServiceAPI_properties_typeProperties_url": {
 						"value": "[parameters('RestServiceAPI_properties_typeProperties_url')]"
+					},
+					"RestWeb1_properties_typeProperties_url": {
+						"value": "[parameters('RestWeb1_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -290,6 +304,26 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DS-Training-2024_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "DS-Training-2024_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
 					},
 					"SqlServer1_password": {
 						"value": "[parameters('SqlServer1_password')]"
@@ -305,6 +339,15 @@
 					},
 					"SqlServerTableTesting_password": {
 						"value": "[parameters('SqlServerTableTesting_password')]"
+					},
+					"SqlServerTestingWeb_password": {
+						"value": "[parameters('SqlServerTestingWeb_password')]"
+					},
+					"sqldbadventure_password": {
+						"value": "[parameters('sqldbadventure_password')]"
+					},
+					"sqldbexcersie_password": {
+						"value": "[parameters('sqldbexcersie_password')]"
 					},
 					"SqlServer1_properties_typeProperties_server": {
 						"value": "[parameters('SqlServer1_properties_typeProperties_server')]"
@@ -350,35 +393,6 @@
 					},
 					"SqlServerTableTesting_properties_typeProperties_userName": {
 						"value": "[parameters('SqlServerTableTesting_properties_typeProperties_userName')]"
-					}
-				}
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'DS-Training-2024_ArmTemplate_1')]"
-			]
-		},
-		{
-			"name": "DS-Training-2024_ArmTemplate_3",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
-			"properties": {
-				"mode": "incremental",
-				"templateLink": {
-					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"factoryName": {
-						"value": "[parameters('factoryName')]"
-					},
-					"SqlServerTestingWeb_password": {
-						"value": "[parameters('SqlServerTestingWeb_password')]"
-					},
-					"sqldbadventure_password": {
-						"value": "[parameters('sqldbadventure_password')]"
-					},
-					"sqldbexcersie_password": {
-						"value": "[parameters('sqldbexcersie_password')]"
 					},
 					"SqlServerTestingWeb_properties_typeProperties_server": {
 						"value": "[parameters('SqlServerTestingWeb_properties_typeProperties_server')]"
@@ -451,6 +465,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'DS-Training-2024_ArmTemplate_4')]"
+			]
+		},
+		{
+			"name": "DS-Training-2024_ArmTemplate_6",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_6.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DS-Training-2024_ArmTemplate_5')]"
 			]
 		}
 	]

@@ -65,6 +65,9 @@
 		"RestService4_properties_typeProperties_url": {
 			"value": "https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb"
 		},
+		"RestService5_properties_typeProperties_url": {
+			"value": "https://api.the-odds-api.com/v4/sports/?apiKey=895704cf19196886e42cf0fa4c9c6422"
+		},
 		"RestServiceAPI_properties_typeProperties_url": {
 			"value": "https://freetestapi.com/api/v1/cars"
 		},
@@ -139,6 +142,9 @@
 		},
 		"sqldbexcersie_properties_typeProperties_userName": {
 			"value": "DESKTOP-14J830G\\Admin"
+		},
+		"RestWeb1_properties_typeProperties_url": {
+			"value": "https://api.the-odds-api.com/v4/sports/?apiKey=895704cf19196886e42cf0fa4c9c6422"
 		}
 	}
 }
