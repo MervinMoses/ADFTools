@@ -1,0 +1,12 @@
+{
+	"name": "RestSports",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RestWeb1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}
