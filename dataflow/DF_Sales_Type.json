@@ -1,0 +1,86 @@
+{
+	"name": "DF_Sales_Type",
+	"properties": {
+		"folder": {
+			"name": "SharmilaAssignments"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "TypeSheet",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				},
+				{
+					"dataset": {
+						"referenceName": "salesSheet",
+						"type": "DatasetReference"
+					},
+					"name": "source3"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Azurejsonfile",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "join1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SKTransType as string,",
+				"          BKTransType as string,",
+				"          TransDesc as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source2",
+				"source(output(",
+				"          InvoiceNumber as string,",
+				"          Date as string,",
+				"          Type as string,",
+				"          Period as string,",
+				"          DueDate as string,",
+				"          InvoiceDate as string,",
+				"          FromDate as string,",
+				"          ToDate as string,",
+				"          NetAmount as string,",
+				"          VatAmount as string,",
+				"          grossValue as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source3",
+				"source3 derive(skDate = ERROR_FUNCTION('__NEW_LINE_R____NEW_LINE_N__concat(__NEW_LINE_R____NEW_LINE_N__    substring(toString(byName(__SINGLE_QUOTE__date__SINGLE_QUOTE__)), 6, 2),  -- MM__NEW_LINE_R____NEW_LINE_N__    substring(toString(byName(__SINGLE_QUOTE__date__SINGLE_QUOTE__)), 9, 2),  -- dd__NEW_LINE_R____NEW_LINE_N__    substring(toString(byName(__SINGLE_QUOTE__date__SINGLE_QUOTE__)), 0, 4)   -- yyyy__NEW_LINE_R____NEW_LINE_N__)__NEW_LINE_R____NEW_LINE_N__')) ~> derivedColumn1",
+				"derivedColumn1, source2 join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

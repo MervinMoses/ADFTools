@@ -1,0 +1,34 @@
+{
+	"name": "TypeSheet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageForSales",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Type",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "DataSample.xlsx",
+				"container": "sales-assignment"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "SKTransType",
+				"type": "String"
+			},
+			{
+				"name": "BKTransType",
+				"type": "String"
+			},
+			{
+				"name": "TransDesc",
+				"type": "String"
+			}
+		]
+	}
+}
