@@ -13,6 +13,43 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/PL_stage_dim')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DIM_TABLE_CREATION",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dim].[studentinfodetails]"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabaseTest",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Sharmila/Activity1"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlJsonStageTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -107,6 +144,25 @@
 				"typeProperties": {
 					"schema": "master",
 					"table": "studentinfo"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTSports')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseTest",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "stage",
+					"table": "sportsdata"
 				}
 			},
 			"dependsOn": []
@@ -845,97 +901,6 @@
 				"schema": [],
 				"typeProperties": {
 					"schema": "master",
-					"table": "studentInfo"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Azurejsonfile')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseAlbinTest",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "jsonfileoutput.json"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzurestudentDim')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseTest",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "StudentId",
-						"type": "nvarchar"
-					},
-					{
-						"name": "StudentCode",
-						"type": "nvarchar"
-					},
-					{
-						"name": "StudentName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Date",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Language",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Maths",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Physics",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Chemistry",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ComputerScience",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CreatedStageDate",
-						"type": "nvarchar"
-					},
-					{
-						"name": "updateddatetime",
-						"type": "nvarchar"
-					},
-					{
-						"name": "updatedby",
-						"type": "nvarchar"
-					},
-					{
-						"name": "isdeleted",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dim",
 					"table": "studentInfo"
 				}
 			},

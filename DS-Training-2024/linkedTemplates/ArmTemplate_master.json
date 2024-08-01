@@ -95,6 +95,10 @@
 			"type": "string",
 			"defaultValue": "https://freetestapi.com/api/v1/cars"
 		},
+		"RestWeb1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.the-odds-api.com/v4/sports/?apiKey=895704cf19196886e42cf0fa4c9c6422"
+		},
 		"SqlServer1_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "DESKTOP-14J830G\\SQLEXPRESS"
@@ -190,10 +194,6 @@
 		"sqldbexcersie_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "DESKTOP-14J830G\\Admin"
-		},
-		"RestWeb1_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://api.the-odds-api.com/v4/sports/?apiKey=895704cf19196886e42cf0fa4c9c6422"
 		},
 		"containerUri": {
 			"type": "string",
