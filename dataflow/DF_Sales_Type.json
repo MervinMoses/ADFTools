@@ -25,7 +25,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "SalesType",
+						"referenceName": "salesReport",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -33,7 +33,7 @@
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
+					"name": "SkDate"
 				},
 				{
 					"name": "JoinSalesType"
@@ -54,7 +54,16 @@
 					"name": "AmountPaidReceivedDesc"
 				},
 				{
+					"name": "ModifiedStyle"
+				},
+				{
+					"name": "FIleName"
+				},
+				{
 					"name": "surrogateKey1"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -82,14 +91,13 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> sales",
-				"sales derive(skDate = concat(\r",
-				"    substring(toString(Date, 'dd-MM-yyyy'), 9, 2),\r",
-				"    substring(toString(Date, 'dd-MM-yyyy'), 6, 2),\r",
-				"    substring(toString(Date, 'dd-MM-yyyy'), 0, 4)\r",
-				"    \r",
-				")\r",
-				") ~> derivedColumn1",
-				"derivedColumn1, Type join(Type == BKTransType,",
+				"ModifiedStyle derive(skDate = concat(\r",
+				"    substring(toString(Date, 'dd-MM-yyyy'), 0, 2),\r",
+				"    substring(toString(Date, 'dd-MM-yyyy'), 4, 2),\r",
+				"    substring(toString(Date, 'dd-MM-yyyy'), 7, 4)\r",
+				"   \r",
+				")) ~> SkDate",
+				"SkDate, Type join(Type == BKTransType,",
 				"     joinType:'outer',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
@@ -115,15 +123,14 @@
 				"DiscardDuplicates derive(CharecontrolNumber = concat(\r",
 				"    Type,'-',InvoiceNumber\r",
 				")) ~> ColumnCharecontrolNumber",
-				"ColumnCharecontrolNumber derive({Amount _Paid/Received} = toString((toDecimal(NetAmount) + toDecimal(VatAmount)) * toDecimal(grossValue))\r",
-				") ~> ColumnAmountPaidReceived",
+				"ColumnCharecontrolNumber derive({Amount _Paid/Received} = toString((toDecimal(NetAmount) + toDecimal(VatAmount)) * toDecimal(grossValue))) ~> ColumnAmountPaidReceived",
 				"ColumnAmountPaidReceived derive(AsOfDate = toString(\r",
 				"    addDays(\r",
 				"        toDate(\r",
 				"            concat(\r",
-				"                substring(toString(addMonths(toDate(Date), 1)), 0, 7),\r",
+				"                substring(toString(addMonths(toDate(Date, 'dd-MM-yyyy'), 1), 'yyyy-MM-dd'), 0, 7),\r",
 				"                '-01'\r",
-				"            )\r",
+				"            ), 'yyyy-MM-dd'\r",
 				"        ),\r",
 				"        -1\r",
 				"    ),\r",
@@ -206,12 +213,43 @@
 				"            )\r",
 				"        )\r",
 				"    )\r",
-				")\r",
-				") ~> AmountPaidReceivedDesc",
-				"AmountPaidReceivedDesc keyGenerate(output(ID as long),",
+				")) ~> AmountPaidReceivedDesc",
+				"sales derive(Date = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+				"          DueDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+				"          InvoiceDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+				"          FromDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+				"          ToDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+				"          Period = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy')) ~> ModifiedStyle",
+				"AmountPaidReceivedDesc derive(FileName = concat('SalesReport_', toString(currentUTC(), 'ddMMyyyy'), '.xlsx')\r",
+				") ~> FIleName",
+				"FIleName keyGenerate(output(ID as long),",
 				"     startAt: 1L,",
 				"     stepValue: 1L) ~> surrogateKey1",
-				"surrogateKey1 sink(allowSchemaDrift: true,",
+				"surrogateKey1 select(mapColumn(",
+				"          ID,",
+				"          InvoiceNumber,",
+				"          Date,",
+				"          skDate,",
+				"          Type,",
+				"          Period,",
+				"          DueDate,",
+				"          InvoiceDate,",
+				"          FromDate,",
+				"          ToDate,",
+				"          NetAmount,",
+				"          VatAmount,",
+				"          grossValue,",
+				"          SKTransType,",
+				"          TransDesc,",
+				"          CharecontrolNumber,",
+				"          {Amount _Paid/Received},",
+				"          {Amount _Paid/ReceivedDesc},",
+				"          AsOfDate,",
+				"          FileName",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
