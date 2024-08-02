@@ -2117,6 +2117,56 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PL_DF_Sales')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_Sales_Type",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"Type": {},
+									"sales": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Sharmila"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DF_Sales_Type')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PL_Logicaltrial')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -6032,6 +6082,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SalesType')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseTest",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "stage",
+					"table": "sales_Type"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseTest')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SqlServeAd2022')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -7477,20 +7548,20 @@
 								"referenceName": "TypeSheet",
 								"type": "DatasetReference"
 							},
-							"name": "source2"
+							"name": "Type"
 						},
 						{
 							"dataset": {
 								"referenceName": "salesSheet",
 								"type": "DatasetReference"
 							},
-							"name": "source3"
+							"name": "sales"
 						}
 					],
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "Azurejsonfile",
+								"referenceName": "SalesType",
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
@@ -7501,7 +7572,25 @@
 							"name": "derivedColumn1"
 						},
 						{
-							"name": "join1"
+							"name": "JoinSalesType"
+						},
+						{
+							"name": "DiscardDuplicates"
+						},
+						{
+							"name": "ColumnCharecontrolNumber"
+						},
+						{
+							"name": "ColumnAmountPaidReceived"
+						},
+						{
+							"name": "AsOfDate"
+						},
+						{
+							"name": "AmountPaidReceivedDesc"
+						},
+						{
+							"name": "surrogateKey1"
 						}
 					],
 					"scriptLines": [
@@ -7512,7 +7601,7 @@
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source2",
+						"     ignoreNoFilesFound: false) ~> Type",
 						"source(output(",
 						"          InvoiceNumber as string,",
 						"          Date as string,",
@@ -7528,14 +7617,133 @@
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source3",
-						"source3 derive(skDate = 0) ~> derivedColumn1",
-						"derivedColumn1, source2 join(Date == SKTransType,",
-						"     joinType:'left',",
+						"     ignoreNoFilesFound: false) ~> sales",
+						"sales derive(skDate = concat(\r",
+						"    substring(toString(Date, 'dd-MM-yyyy'), 9, 2),\r",
+						"    substring(toString(Date, 'dd-MM-yyyy'), 6, 2),\r",
+						"    substring(toString(Date, 'dd-MM-yyyy'), 0, 4)\r",
+						"    \r",
+						")) ~> derivedColumn1",
+						"derivedColumn1, Type join(Type == BKTransType,",
+						"     joinType:'outer',",
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> join1",
-						"join1 sink(allowSchemaDrift: true,",
+						"     broadcast: 'auto')~> JoinSalesType",
+						"JoinSalesType select(mapColumn(",
+						"          InvoiceNumber,",
+						"          Date,",
+						"          Type,",
+						"          Period,",
+						"          DueDate,",
+						"          InvoiceDate,",
+						"          FromDate,",
+						"          ToDate,",
+						"          NetAmount,",
+						"          VatAmount,",
+						"          grossValue,",
+						"          skDate,",
+						"          SKTransType,",
+						"          TransDesc",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> DiscardDuplicates",
+						"DiscardDuplicates derive(CharecontrolNumber = concat(\r",
+						"    Type,'-',InvoiceNumber\r",
+						")) ~> ColumnCharecontrolNumber",
+						"ColumnCharecontrolNumber derive({Amount _Paid/Received} = toString((toDecimal(NetAmount) + toDecimal(VatAmount)) * toDecimal(grossValue))) ~> ColumnAmountPaidReceived",
+						"ColumnAmountPaidReceived derive(AsOfDate = toString(\r",
+						"    addDays(\r",
+						"        toDate(\r",
+						"            concat(\r",
+						"                substring(toString(addMonths(toDate(Date), 1)), 0, 7),\r",
+						"                '-01'\r",
+						"            )\r",
+						"        ),\r",
+						"        -1\r",
+						"    ),\r",
+						"    'dd-MM-yyyy'\r",
+						")) ~> AsOfDate",
+						"AsOfDate derive({Amount _Paid/ReceivedDesc} = iif(\r",
+						"    {Amount _Paid/Received} >= '800000',\r",
+						"    iif(\r",
+						"        Type == 'C', 'charge is high',\r",
+						"        iif(\r",
+						"            Type == 'P', 'Payable is high',\r",
+						"            iif(\r",
+						"                Type == 'K', 'Cheque is high',\r",
+						"                iif(\r",
+						"                    Type == 'J', 'Journal entry is high',\r",
+						"                    iif(\r",
+						"                        Type == 'R', 'Receipt is high',\r",
+						"                        'Unknown Type'\r",
+						"                    )\r",
+						"                )\r",
+						"            )\r",
+						"        )\r",
+						"    ),\r",
+						"    iif(\r",
+						"        {Amount _Paid/Received} >= '400000',\r",
+						"        iif(\r",
+						"            Type == 'C', 'charge is medium',\r",
+						"            iif(\r",
+						"                Type == 'P', 'Payable is medium',\r",
+						"                iif(\r",
+						"                    Type == 'K', 'Cheque is medium',\r",
+						"                    iif(\r",
+						"                        Type == 'J', 'Journal entry is medium',\r",
+						"                        iif(\r",
+						"                            Type == 'R', 'Receipt is medium',\r",
+						"                            'Unknown Type'\r",
+						"                        )\r",
+						"                    )\r",
+						"                )\r",
+						"            )\r",
+						"        ),\r",
+						"        iif(\r",
+						"            {Amount _Paid/Received} >= '100000',\r",
+						"            iif(\r",
+						"                Type == 'C', 'charge is Low',\r",
+						"                iif(\r",
+						"                    Type == 'P', 'Payable is Low',\r",
+						"                    iif(\r",
+						"                        Type == 'K', 'Cheque is Low',\r",
+						"                        iif(\r",
+						"                            Type == 'J', 'Journal entry is Low',\r",
+						"                            iif(\r",
+						"                                Type == 'R', 'Receipt is Low',\r",
+						"                                'Unknown Type'\r",
+						"                            )\r",
+						"                        )\r",
+						"                    )\r",
+						"                )\r",
+						"            ),\r",
+						"            iif(\r",
+						"                {Amount _Paid/Received} < '100000',\r",
+						"                iif(\r",
+						"                    Type == 'C', 'charge is very Low',\r",
+						"                    iif(\r",
+						"                        Type == 'P', 'Payable is very Low',\r",
+						"                        iif(\r",
+						"                            Type == 'K', 'Cheque is very Low',\r",
+						"                            iif(\r",
+						"                                Type == 'J', 'Journal entry is very Low',\r",
+						"                                iif(\r",
+						"                                    Type == 'R', 'Receipt is very Low',\r",
+						"                                    'Unknown Type'\r",
+						"                                )\r",
+						"                            )\r",
+						"                        )\r",
+						"                    )\r",
+						"                ),\r",
+						"                'Amount out of range'\r",
+						"            )\r",
+						"        )\r",
+						"    )\r",
+						")) ~> AmountPaidReceivedDesc",
+						"AmountPaidReceivedDesc keyGenerate(output(ID as long),",
+						"     startAt: 1L,",
+						"     stepValue: 1L) ~> surrogateKey1",
+						"surrogateKey1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:true,",
@@ -7551,7 +7759,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/TypeSheet')]",
 				"[concat(variables('factoryId'), '/datasets/salesSheet')]",
-				"[concat(variables('factoryId'), '/datasets/Azurejsonfile')]"
+				"[concat(variables('factoryId'), '/datasets/SalesType')]"
 			]
 		},
 		{
