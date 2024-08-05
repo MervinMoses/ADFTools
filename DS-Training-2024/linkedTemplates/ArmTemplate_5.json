@@ -13,6 +13,310 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/sqldatabook1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "sqldbadventure",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "BNO",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "BNAME",
+						"type": "varchar"
+					},
+					{
+						"name": "AUTHOR",
+						"type": "varchar"
+					},
+					{
+						"name": "PUBLISHER",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "HumanResources",
+					"table": "Employee"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_Sales_Type')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "SharmilaAssignments"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "TypeSheet",
+								"type": "DatasetReference"
+							},
+							"name": "Type"
+						},
+						{
+							"dataset": {
+								"referenceName": "salesSheet",
+								"type": "DatasetReference"
+							},
+							"name": "sales"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "salesReport",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SkDate"
+						},
+						{
+							"name": "JoinSalesType"
+						},
+						{
+							"name": "DiscardDuplicates"
+						},
+						{
+							"name": "ColumnCharecontrolNumber"
+						},
+						{
+							"name": "ColumnAmountPaidReceived"
+						},
+						{
+							"name": "AsOfDate"
+						},
+						{
+							"name": "AmountPaidReceivedDesc"
+						},
+						{
+							"name": "ModifiedStyle"
+						},
+						{
+							"name": "FIleName"
+						},
+						{
+							"name": "surrogateKey1"
+						},
+						{
+							"name": "select1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          SKTransType as string,",
+						"          BKTransType as string,",
+						"          TransDesc as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Type",
+						"source(output(",
+						"          InvoiceNumber as string,",
+						"          Date as string,",
+						"          Type as string,",
+						"          Period as string,",
+						"          DueDate as string,",
+						"          InvoiceDate as string,",
+						"          FromDate as string,",
+						"          ToDate as string,",
+						"          NetAmount as string,",
+						"          VatAmount as string,",
+						"          grossValue as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> sales",
+						"ModifiedStyle derive(skDate = concat(\r",
+						"    substring(toString(Date, 'dd-MM-yyyy'), 0, 2),\r",
+						"    substring(toString(Date, 'dd-MM-yyyy'), 4, 2),\r",
+						"    substring(toString(Date, 'dd-MM-yyyy'), 7, 4)\r",
+						"   \r",
+						")) ~> SkDate",
+						"SkDate, Type join(Type == BKTransType,",
+						"     joinType:'outer',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> JoinSalesType",
+						"JoinSalesType select(mapColumn(",
+						"          InvoiceNumber,",
+						"          Date,",
+						"          Type,",
+						"          Period,",
+						"          DueDate,",
+						"          InvoiceDate,",
+						"          FromDate,",
+						"          ToDate,",
+						"          NetAmount,",
+						"          VatAmount,",
+						"          grossValue,",
+						"          skDate,",
+						"          SKTransType,",
+						"          TransDesc",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> DiscardDuplicates",
+						"DiscardDuplicates derive(CharecontrolNumber = concat(\r",
+						"    Type,'-',InvoiceNumber\r",
+						")) ~> ColumnCharecontrolNumber",
+						"ColumnCharecontrolNumber derive({Amount _Paid/Received} = toString((toDecimal(NetAmount) + toDecimal(VatAmount)) * toDecimal(grossValue))) ~> ColumnAmountPaidReceived",
+						"ColumnAmountPaidReceived derive(AsOfDate = toString(\r",
+						"    addDays(\r",
+						"        toDate(\r",
+						"            concat(\r",
+						"                substring(toString(addMonths(toDate(Date, 'dd-MM-yyyy'), 1), 'yyyy-MM-dd'), 0, 7),\r",
+						"                '-01'\r",
+						"            ), 'yyyy-MM-dd'\r",
+						"        ),\r",
+						"        -1\r",
+						"    ),\r",
+						"    'dd-MM-yyyy'\r",
+						")) ~> AsOfDate",
+						"AsOfDate derive({Amount _Paid/ReceivedDesc} = iif(\r",
+						"    {Amount _Paid/Received} >= '800000',\r",
+						"    iif(\r",
+						"        Type == 'C', 'charge is high',\r",
+						"        iif(\r",
+						"            Type == 'P', 'Payable is high',\r",
+						"            iif(\r",
+						"                Type == 'K', 'Cheque is high',\r",
+						"                iif(\r",
+						"                    Type == 'J', 'Journal entry is high',\r",
+						"                    iif(\r",
+						"                        Type == 'R', 'Receipt is high',\r",
+						"                        'Unknown Type'\r",
+						"                    )\r",
+						"                )\r",
+						"            )\r",
+						"        )\r",
+						"    ),\r",
+						"    iif(\r",
+						"        {Amount _Paid/Received} >= '400000',\r",
+						"        iif(\r",
+						"            Type == 'C', 'charge is medium',\r",
+						"            iif(\r",
+						"                Type == 'P', 'Payable is medium',\r",
+						"                iif(\r",
+						"                    Type == 'K', 'Cheque is medium',\r",
+						"                    iif(\r",
+						"                        Type == 'J', 'Journal entry is medium',\r",
+						"                        iif(\r",
+						"                            Type == 'R', 'Receipt is medium',\r",
+						"                            'Unknown Type'\r",
+						"                        )\r",
+						"                    )\r",
+						"                )\r",
+						"            )\r",
+						"        ),\r",
+						"        iif(\r",
+						"            {Amount _Paid/Received} >= '100000',\r",
+						"            iif(\r",
+						"                Type == 'C', 'charge is Low',\r",
+						"                iif(\r",
+						"                    Type == 'P', 'Payable is Low',\r",
+						"                    iif(\r",
+						"                        Type == 'K', 'Cheque is Low',\r",
+						"                        iif(\r",
+						"                            Type == 'J', 'Journal entry is Low',\r",
+						"                            iif(\r",
+						"                                Type == 'R', 'Receipt is Low',\r",
+						"                                'Unknown Type'\r",
+						"                            )\r",
+						"                        )\r",
+						"                    )\r",
+						"                )\r",
+						"            ),\r",
+						"            iif(\r",
+						"                {Amount _Paid/Received} < '100000',\r",
+						"                iif(\r",
+						"                    Type == 'C', 'charge is very Low',\r",
+						"                    iif(\r",
+						"                        Type == 'P', 'Payable is very Low',\r",
+						"                        iif(\r",
+						"                            Type == 'K', 'Cheque is very Low',\r",
+						"                            iif(\r",
+						"                                Type == 'J', 'Journal entry is very Low',\r",
+						"                                iif(\r",
+						"                                    Type == 'R', 'Receipt is very Low',\r",
+						"                                    'Unknown Type'\r",
+						"                                )\r",
+						"                            )\r",
+						"                        )\r",
+						"                    )\r",
+						"                ),\r",
+						"                'Amount out of range'\r",
+						"            )\r",
+						"        )\r",
+						"    )\r",
+						")) ~> AmountPaidReceivedDesc",
+						"sales derive(Date = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+						"          DueDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+						"          InvoiceDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+						"          FromDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+						"          ToDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+						"          Period = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy')) ~> ModifiedStyle",
+						"AmountPaidReceivedDesc derive(FileName = concat('SalesReport_', toString(currentUTC(), 'ddMMyyyy'), '.xlsx')) ~> FIleName",
+						"FIleName keyGenerate(output(ID as long),",
+						"     startAt: 1L,",
+						"     stepValue: 1L) ~> surrogateKey1",
+						"surrogateKey1 select(mapColumn(",
+						"          ID,",
+						"          InvoiceNumber,",
+						"          Date,",
+						"          skDate,",
+						"          Type,",
+						"          Period,",
+						"          DueDate,",
+						"          InvoiceDate,",
+						"          FromDate,",
+						"          ToDate,",
+						"          NetAmount,",
+						"          VatAmount,",
+						"          grossValue,",
+						"          SKTransType,",
+						"          TransDesc,",
+						"          CharecontrolNumber,",
+						"          {Amount _Paid/Received},",
+						"          {Amount _Paid/ReceivedDesc},",
+						"          AsOfDate,",
+						"          FileName",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     truncate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DF_TABLE_BLOB')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -2071,28 +2375,18 @@
 							},
 							"traceLevel": "Fine"
 						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Sharmila"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PL_dim_master')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
+					},
 					{
-						"name": "Dim_master",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
+						"name": "Stored procedure1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Data flow1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -2102,29 +2396,21 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dataStudentMaster",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
+							"storedProcedureName": "[[dim].[salesTypeReport]"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabaseTest",
+							"type": "LinkedServiceReference"
 						}
 					},
 					{
 						"name": "Execute Pipeline1",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
-								"activity": "Dim_master",
+								"activity": "Stored procedure1",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2136,7 +2422,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "PL_Logicaltrial",
+								"referenceName": "PL_SP_UP_DEL_SALES",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -2148,93 +2434,13 @@
 					"elapsedTimeMetric": {}
 				},
 				"folder": {
-					"name": "Sharmila/Activity1"
+					"name": "Sharmila/Activity4"
 				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataStudentMaster')]"
+				"[concat(variables('factoryId'), '/dataflows/DF_Sales_Type')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_To_SQL')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "SqlServerSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "RNo",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "name",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "sqldatabook1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SqlServerTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "training"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-21T13:10:57Z"
-			},
-			"dependsOn": []
 		}
 	]
 }

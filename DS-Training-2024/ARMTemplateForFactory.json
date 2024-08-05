@@ -2152,18 +2152,73 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "Stored procedure1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Data flow1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dim].[salesTypeReport]"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabaseTest",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Execute Pipeline1",
+						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Stored procedure1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PL_SP_UP_DEL_SALES",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
 				"folder": {
-					"name": "Sharmila"
+					"name": "Sharmila/Activity4"
 				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DF_Sales_Type')]"
+				"[concat(variables('factoryId'), '/dataflows/DF_Sales_Type')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseTest')]",
+				"[concat(variables('factoryId'), '/pipelines/PL_SP_UP_DEL_SALES')]"
 			]
 		},
 		{
@@ -2302,6 +2357,110 @@
 				},
 				"folder": {
 					"name": "Sharmila/Activity3"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseTest')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_SP_UP_DEL_SALES')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Script1",
+						"type": "Script",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabaseTest",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": "update [stage].[salesReport] set grossValue=1 where id=2"
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "Stored procedure1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Script1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Script2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dim].[sp_stage_dim_salesReport]"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabaseTest",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Script2",
+						"type": "Script",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabaseTest",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": "delete from [stage].[salesReport] where id=3\n"
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Sharmila/Activity4"
 				},
 				"annotations": []
 			},
@@ -6924,6 +7083,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/salesReport')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseTest",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "stage",
+					"table": "salesReport"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseTest')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/salesSheet')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -7561,7 +7741,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "SalesType",
+								"referenceName": "salesReport",
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
@@ -7569,7 +7749,7 @@
 					],
 					"transformations": [
 						{
-							"name": "derivedColumn1"
+							"name": "SkDate"
 						},
 						{
 							"name": "JoinSalesType"
@@ -7590,7 +7770,16 @@
 							"name": "AmountPaidReceivedDesc"
 						},
 						{
+							"name": "ModifiedStyle"
+						},
+						{
+							"name": "FIleName"
+						},
+						{
 							"name": "surrogateKey1"
+						},
+						{
+							"name": "select1"
 						}
 					],
 					"scriptLines": [
@@ -7618,13 +7807,13 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false) ~> sales",
-						"sales derive(skDate = concat(\r",
-						"    substring(toString(Date, 'dd-MM-yyyy'), 9, 2),\r",
-						"    substring(toString(Date, 'dd-MM-yyyy'), 6, 2),\r",
-						"    substring(toString(Date, 'dd-MM-yyyy'), 0, 4)\r",
-						"    \r",
-						")) ~> derivedColumn1",
-						"derivedColumn1, Type join(Type == BKTransType,",
+						"ModifiedStyle derive(skDate = concat(\r",
+						"    substring(toString(Date, 'dd-MM-yyyy'), 0, 2),\r",
+						"    substring(toString(Date, 'dd-MM-yyyy'), 4, 2),\r",
+						"    substring(toString(Date, 'dd-MM-yyyy'), 7, 4)\r",
+						"   \r",
+						")) ~> SkDate",
+						"SkDate, Type join(Type == BKTransType,",
 						"     joinType:'outer',",
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
@@ -7655,9 +7844,9 @@
 						"    addDays(\r",
 						"        toDate(\r",
 						"            concat(\r",
-						"                substring(toString(addMonths(toDate(Date), 1)), 0, 7),\r",
+						"                substring(toString(addMonths(toDate(Date, 'dd-MM-yyyy'), 1), 'yyyy-MM-dd'), 0, 7),\r",
 						"                '-01'\r",
-						"            )\r",
+						"            ), 'yyyy-MM-dd'\r",
 						"        ),\r",
 						"        -1\r",
 						"    ),\r",
@@ -7740,15 +7929,47 @@
 						"        )\r",
 						"    )\r",
 						")) ~> AmountPaidReceivedDesc",
-						"AmountPaidReceivedDesc keyGenerate(output(ID as long),",
+						"sales derive(Date = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+						"          DueDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+						"          InvoiceDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+						"          FromDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+						"          ToDate = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy'),",
+						"          Period = toString(toDate(Date, 'yyyy-MM-dd'), 'dd-MM-yyyy')) ~> ModifiedStyle",
+						"AmountPaidReceivedDesc derive(FileName = concat('SalesReport_', toString(currentUTC(), 'ddMMyyyy'), '.xlsx')) ~> FIleName",
+						"FIleName keyGenerate(output(ID as long),",
 						"     startAt: 1L,",
 						"     stepValue: 1L) ~> surrogateKey1",
-						"surrogateKey1 sink(allowSchemaDrift: true,",
+						"surrogateKey1 select(mapColumn(",
+						"          ID,",
+						"          InvoiceNumber,",
+						"          Date,",
+						"          skDate,",
+						"          Type,",
+						"          Period,",
+						"          DueDate,",
+						"          InvoiceDate,",
+						"          FromDate,",
+						"          ToDate,",
+						"          NetAmount,",
+						"          VatAmount,",
+						"          grossValue,",
+						"          SKTransType,",
+						"          TransDesc,",
+						"          CharecontrolNumber,",
+						"          {Amount _Paid/Received},",
+						"          {Amount _Paid/ReceivedDesc},",
+						"          AsOfDate,",
+						"          FileName",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:true,",
 						"     updateable:false,",
 						"     upsertable:false,",
+						"     truncate:true,",
 						"     format: 'table',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
@@ -7759,7 +7980,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/TypeSheet')]",
 				"[concat(variables('factoryId'), '/datasets/salesSheet')]",
-				"[concat(variables('factoryId'), '/datasets/SalesType')]"
+				"[concat(variables('factoryId'), '/datasets/salesReport')]"
 			]
 		},
 		{
